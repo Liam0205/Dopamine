@@ -221,21 +221,13 @@ int registerJbPrefixedPath(NSString *sourcePath) {
   if (![fm fileExistsAtPath:jbPrefixedPath]) {
     // two cases: 1) this is the first time we need to create this path; 2) just removed an empty directory.
     JBLogDebug("Creating and Copying contents to jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
-    if (![fm createDirectoryAtPath:jbPrefixedPath withIntermediateDirectories:YES attributes:nil error:nil]) {
-      JBLogDebug("Failed to create jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
-      return 1;
-    }
-    if (![fm copyItemAtPath:sourcePath toPath:jbPrefixedPath error:nil]) {
-      JBLogDebug("Failed to copy contents to jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
-      return 2;
-    }
+    [fm createDirectoryAtPath:jbPrefixedPath withIntermediateDirectories:YES attributes:nil error:nil];
+    [fm removeItemAtPath:jbPrefixedPath error:nil];
+    [fm copyItemAtPath:sourcePath toPath:jbPrefixedPath error:nil];
   }
 
   JBLogDebug("Binding and mounting jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
-  if (0 != bindMount(sourcePath.fileSystemRepresentation, jbPrefixedPath.fileSystemRepresentation)) {
-    JBLogDebug("Failed to bind and mount jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
-    return 3;
-  }
+  bindMount(sourcePath.fileSystemRepresentation, jbPrefixedPath.fileSystemRepresentation);
   return 0;
 }
 
@@ -273,6 +265,7 @@ int64_t updateBindMount() {
 	}
 
 	[current writeToFile:prefixersPlist atomically:YES];
+	[fm removeItemAtPath:updatePrefixersPlist error:nil];
 
 	return 0;
 }

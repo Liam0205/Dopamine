@@ -59,6 +59,13 @@ jobs:
           make
           cp Fugu15/Fugu15.tipa Fugu15-Max_Liam.ipa
           mv Fugu15/Fugu15.tipa Fugu15-Max_${{ env.shorthash }}_${{ env.ctime }}.ipa
+          git stash
+          git checkout patch-en
+          git rebase patch
+          git stash pop
+          make
+          cp Fugu15/Fugu15.tipa Fugu15-Max_English.ipa
+          mv Fugu15/Fugu15.tipa Fugu15-Max_English_${{ env.shorthash }}_${{ env.ctime }}.ipa
 
       - name: Auto Release
         uses: softprops/action-gh-release@v1
