@@ -161,16 +161,16 @@ struct JailbreakView: View {
                             execCmd(args: [CommandLine.arguments[0], "uninstall_environment"])
                     })
             }
-            Spacer()
-            Group {
-                Text("Long press to active the Haptic Touch mune.")
-                    .multilineTextAlignment(.center)
-                    .padding(.leading, 100)
-                    .padding(.trailing, 100)
-                    .padding(.bottom)
-                    .frame(maxHeight: 100)
-            }.padding(.bottom, 25)
         }
+        Spacer()
+        Group {
+            Text("Long press to active the Haptic Touch mune.")
+                .multilineTextAlignment(.center)
+                .padding(.leading, 100)
+                .padding(.trailing, 100)
+                .padding(.bottom)
+                .frame(maxHeight: 100)
+        }.padding(.bottom, 25)
     }
 
     func print(_ text: String, ender: String = "\n") {
