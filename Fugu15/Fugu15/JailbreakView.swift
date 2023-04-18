@@ -18,19 +18,19 @@ enum JBStatus {
     func text() -> String {
         switch self {
         case .notStarted:
-            return "越狱"
+            return "Jailbreak"
 
         case .unsupported:
-            return "不支持"
+            return "Unsupported"
 
         case .inProgress:
-            return "越狱中..."
+            return "Jailbreaking..."
 
         case .failed:
-            return "错误!"
+            return "Error!"
 
         case .done:
-            return "已越狱!"
+            return "Jailbroken!"
         }
     }
 
@@ -91,7 +91,7 @@ struct JailbreakView: View {
                 .font(.footnote)
                 .opacity(0.4)
 
-            Button("注销", action: {
+            Button("Respring", action: {
                 execCmd(args: ["/var/jb/usr/bin/killall", "-9", "backboardd"])
             })
                 .padding()
@@ -100,7 +100,7 @@ struct JailbreakView: View {
                 .cornerRadius(10)
                 .foregroundColor(Color.white)
 
-            Button("软重启", action: {
+            Button("ldrestart", action: {
                 execCmd(args: ["/var/jb/usr/bin/ldrestart"])
             })
                 .padding()
@@ -109,7 +109,7 @@ struct JailbreakView: View {
                 .cornerRadius(10)
                 .foregroundColor(Color.white)
 
-            Button("重启用户空间", action: {
+            Button("reboot userspace", action: {
                 execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
             })
                 .padding()
@@ -118,7 +118,7 @@ struct JailbreakView: View {
                 .cornerRadius(10)
                 .foregroundColor(Color.white)
 
-            Button("重启", action: {
+            Button("reboot", action: {
                 execCmd(args: ["/var/jb/usr/sbin/reboot"])
             })
                 .padding()
@@ -129,16 +129,16 @@ struct JailbreakView: View {
         }.alert(isPresented: $showSuccessMsg) {
             Alert(
                 title: Text("成功"),
-                message: Text("越狱环境已成功建立，但系统范围的注入将仅仅影响自此之后的新进程。" +
-                              "因此，建议立即重启用户空间，但你也可以选择稍后自行注销/软重启/重启用户空间。"),
+                message: Text("Post environment started successfully, system wide injection will only affect newly spawned processes for now!" +
+                              "Hence, reboot userspace is recommended; however, you can manually respring/ldrestart/reboot userspace later."),
                 primaryButton: .default(
-                    Text("立即重启用户空间"),
+                    Text("Reboot userspace now"),
                     action: {
                         execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
                     }
                 ),
                 secondaryButton: .cancel(
-                    Text("稍后自行处理")
+                    Text("I'll do it later manually")
                 )
             )
         }
