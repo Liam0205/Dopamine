@@ -162,9 +162,14 @@ struct JailbreakView: View {
                     })
             }
             Spacer()
-            Text("Long press to active the Haptic Touch mune.")
-            .multilineTextAlignment(.center)
-            .padding(.bottom, 25)
+            Group {
+                Text("Long press to active the Haptic Touch mune.")
+                    .multilineTextAlignment(.center)
+                    .padding(.leading, 100)
+                    .padding(.trailing, 100)
+                    .padding(.bottom)
+                    .frame(maxHeight: 100)
+            }.padding(.bottom, 25)
         }
     }
 
