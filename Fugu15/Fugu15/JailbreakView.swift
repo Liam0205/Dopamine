@@ -18,19 +18,19 @@ enum JBStatus {
     func text() -> String {
         switch self {
         case .notStarted:
-            return "越狱"
+            return "Jailbreak"
 
         case .unsupported:
-            return "不支持"
+            return "Unsupported"
 
         case .inProgress:
-            return "越狱中..."
+            return "Jailbreaking..."
 
         case .failed:
-            return "错误!"
+            return "Error!"
 
         case .done:
-            return "已越狱!"
+            return "Jailbroken!"
         }
     }
 
@@ -85,13 +85,13 @@ struct JailbreakView: View {
                         activeAlert = .hidden
                         showAlert = true
                     }, label: {
-                        Label("隐藏越狱", systemImage: "eye.slash")
+                        Label("Hide Environment", systemImage: "eye.slash")
                     })
                     Button(role: .destructive, action: {
                         activeAlert = .uninstall
                         showAlert = true
                     }, label: {
-                        Label("删除越狱", systemImage: "trash")
+                        Label("Uninstall Environment", systemImage: "trash")
                     })
                 }
                 .padding()
@@ -112,7 +112,7 @@ struct JailbreakView: View {
                 .font(.footnote)
                 .opacity(0.4)
 
-            Button("注销", action: {
+            Button("Respring", action: {
                 execCmd(args: ["/var/jb/usr/bin/killall", "-9", "backboardd"])
             })
                 .padding()
@@ -123,24 +123,24 @@ struct JailbreakView: View {
                     Button(action: {
                         execCmd(args: ["/var/jb/usr/bin/ldrestart"])
                     }, label: {
-                        Label("软重启", systemImage: "restart")
+                        Label("ldrestart", systemImage: "restart")
                     })
                     Button(action: {
                         execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
                     }, label: {
-                        Label("重启用户空间", systemImage: "restart.circle")
+                        Label("reboot userspace", systemImage: "restart.circle")
                     })
                     Button(role: .destructive, action: {
                         execCmd(args: ["/var/jb/usr/sbin/reboot"])
                     }, label: {
-                        Label("重启", systemImage: "restart.circle.fill")
+                        Label("reboot", systemImage: "restart.circle.fill")
                     })
                 }
 
             Spacer()
 
             Group {
-                Text("提示：长按以激活 Haptic Touch 菜单，显示更多内容。")
+                Text("Note: Long press to active the Haptic Touch menu.")
                     .multilineTextAlignment(.center)
                     .padding(.leading, 10)
                     .padding(.trailing, 10)
@@ -152,25 +152,25 @@ struct JailbreakView: View {
                 case .jailbroken:
                     return  Alert(
                 title: Text("成功"),
-                message: Text("越狱环境已成功建立，但系统范围的注入将仅仅影响自此之后的新进程。" +
-                              "因此，建议立即重启用户空间，但你也可以选择稍后自行注销/软重启/重启用户空间。"),
+                message: Text("Post environment started successfully, system wide injection will only affect newly spawned processes for now!" +
+                              "Hence, reboot userspace is recommended; however, you can manually respring/ldrestart/reboot userspace later."),
                 primaryButton: .cancel(
-                    Text("稍后自行处理")
+                    Text("I'll do it later manually")
                 ),
                 secondaryButton: .default(
-                    Text("立即重启用户空间"),
+                    Text("Reboot userspace now"),
                     action: {
-                                execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
-                            }
+                        execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
+                    }
                 )
             )
                 case .hidden:
-                    return Alert(title: Text("已隐藏越狱"), message: Text("下次越狱前，越狱环境已完全隐藏。"), dismissButton: .default(Text("OK")))
+                    return Alert(title: Text("Environment Hidden"), message: Text("Jailbreak environment fully hidden until the next rejailbreak."), dismissButton: .default(Text("OK")))
                 case .uninstall:
-                    return Alert(title: Text("删除越狱"),
-                        message: Text("你确定要删除越狱环境嘛？这将删除你安装的所有越狱包、插件、App；仅有一些配置文件可能得到保留。"),
-                        primaryButton: .cancel(Text("取消")),
-                        secondaryButton: .default(Text("删除越狱")) {
+                    return Alert(title: Text("Uninstall?"),
+                        message: Text("Are you sure you want to uninstall the jailbreak environment? This will delete everything about your jailbreak including packages, tweaks and apps."),
+                        primaryButton: .cancel(),
+                        secondaryButton: .default(Text("Uninstall Environment")) {
                             execCmd(args: [CommandLine.arguments[0], "uninstall_environment"])
                     })
             }

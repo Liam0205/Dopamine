@@ -27,17 +27,17 @@ struct ContentView: View {
                 TabView {
                     JailbreakView(logText: $logText)
                         .tabItem {
-                            Label("越狱", systemImage: "wand.and.stars")
+                            Label("Jailbreak", systemImage: "wand.and.stars")
                         }
 
                     LogView(logText: $logText)
                         .tabItem {
-                            Label("日志", systemImage: "doc.text.magnifyingglass")
+                            Label("Log", systemImage: "doc.text.magnifyingglass")
                         }
 
                     AboutView()
                         .tabItem {
-                            Label("关于", systemImage: "info.circle")
+                            Label("About", systemImage: "info.circle")
                         }
                 }
                     .sheet(isPresented: $showingRemoveFrame) {
