@@ -62,6 +62,7 @@ struct ContentView: View {
         menuOptions = [
             .init(imageName: "gearshape", title: "Settings", view: AnyView(SettingsView())),
             .init(imageName: "arrow.clockwise", title: "Restart SpringBoard", showUnjailbroken: false, action: respring),
+            .init(imageName: "arrow.counterclockwise.circle", title: "ldrestart", showUnjailbroken: false, action: doLdrestart),
             .init(imageName: "arrow.clockwise.circle", title: "Reboot Userspace", showUnjailbroken: false, action: userspaceReboot),
             .init(imageName: "arrow.clockwise.circle.fill", title: "Reboot", showUnjailbroken: false, action: doReboot),
             .init(imageName: "info.circle", title: "Credits", view: AnyView(AboutView())),
