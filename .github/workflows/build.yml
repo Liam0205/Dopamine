@@ -1,0 +1,58 @@
+name: build_Release
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+         
+      - name: Install Procursus
+        uses: dhinakg/procursus-action@main
+        with:
+          packages: ldid trustcache
+         
+      - name: Set env
+        run: |
+         T1=$(TZ=UTC-8 date +'%Y-%m-%d %H:%M')
+         T2=$(TZ=UTC-8 date +'%S')
+         t_name=$(date -j -f "%Y-%m-%d %H:%M:%S" "${T1}:${T2}" +%s)
+         echo "t_name=${t_name}" >> $GITHUB_ENV
+         T3=$(TZ=UTC-8 date +'%Y.%m.%d/%H.%M')
+         echo "SH=${T3}.${T2}" >> $GITHUB_ENV
+    
+      - name: Log env
+        run: |
+         echo ${{ env.t_name }}
+         echo ${{ env.SH }}
+         
+      - name: Build tipa
+        run: |
+          sed -i '' "s/COMPILE_TIME=\`TZ=UTC-8 date \\\\\"+%Y-%m-%d_%H%M%S\\\\\"\`/COMPILE_TIME=${{ env.ctime }}/g" ./Fugu15/Makefile
+          sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
+          make
+          mv Fugu15/Fugu15.tipa Dopamine.tipa
+      
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.SH }}
+          body: ${{ env.t_name }}
+          files: |
+           *.tipa
