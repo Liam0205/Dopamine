@@ -303,21 +303,21 @@ struct ContentView: View {
     var endButtons: some View {
         switch jailbreakingProgress {
         case .finished:
-//            Button {
-//                userspaceReboot()
-//            } label: {
-//                Label(title: { Text("Reboot Userspace (Finish)") }, icon: {
-//                    Image(systemName: "arrow.clockwise")
-//                })
-//                .foregroundColor(.white)
-//                .padding()
-//                .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? 0 : nil)
-//                .background(MaterialView(.light)
-//                    .opacity(0.5)
-//                    .cornerRadius(8)
-//                )
-//                .opacity(jailbreakingError != nil ? 0 : 1)
-//            }
+            Button {
+                userspaceReboot()
+            } label: {
+                Label(title: { Text("Reboot Userspace (Finish)") }, icon: {
+                    Image(systemName: "arrow.clockwise")
+                })
+                .foregroundColor(.white)
+                .padding()
+                .frame(maxWidth: 280, maxHeight: jailbreakingError != nil ? 0 : nil)
+                .background(MaterialView(.light)
+                    .opacity(0.5)
+                    .cornerRadius(8)
+                )
+                .opacity(jailbreakingError != nil ? 0 : 1)
+            }
             if !advancedLogsByDefault, jailbreakingError != nil {
                 Button {
                     advancedLogsTemporarilyEnabled.toggle()
