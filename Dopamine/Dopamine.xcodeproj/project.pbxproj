@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C371ABC29FD9A57003C3CF7 /* constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C371ABB29FD9A57003C3CF7 /* constants.m */; };
 		1502A40C2891B03F0011CB6E /* DopamineApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1502A40B2891B03F0011CB6E /* DopamineApp.swift */; };
 		1502A4102891B0410011CB6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1502A40F2891B0410011CB6E /* Assets.xcassets */; };
 		1502A4132891B0410011CB6E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1502A4122891B0410011CB6E /* Preview Assets.xcassets */; };
@@ -47,6 +48,8 @@
 
 /* Begin PBXFileReference section */
 		0C1F280A2A029FB10053DDD6 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0C371ABB29FD9A57003C3CF7 /* constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = constants.m; path = Dopamine/constants.m; sourceTree = "<group>"; };
+		938DADEC29F2DBE100C37952 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		0C5D3B0929F2DA27002924C0 /* zh_HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_HK; path = zh_HK.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0C5D3B0A29F2DA3C002924C0 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1502A4082891B03F0011CB6E /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +135,7 @@
 		1502A3FF2891B03F0011CB6E = {
 			isa = PBXGroup;
 			children = (
+				0C371ABB29FD9A57003C3CF7 /* constants.m */,
 				938DADDD29F20ACA00C37952 /* Localizable.strings */,
 				9380BFFF29E8601600C0121A /* Fugu15KernelExploit */,
 				1502A42A2891BF130011CB6E /* Makefile */,
@@ -378,6 +382,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C371ABC29FD9A57003C3CF7 /* constants.m in Sources */,
 				9380C00129EAE9C600C0121A /* PackageManagerSelectionView.swift in Sources */,
 				CEC4159C29D30D3100D79EE9 /* JailbreakView.swift in Sources */,
 				CEBBF6DD29DB04FA00AD7299 /* Jailbreak.swift in Sources */,
