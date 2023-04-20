@@ -201,6 +201,9 @@ struct JailbreakView: View {
                 Text("Title_Made_By")
                     .font(.subheadline)
                     .foregroundColor(tint.opacity(0.5))
+                Text("Compile Time (UTC-8): \(Constants.compileTime())")
+                    .font(.footnote)
+                    .foregroundColor(tint.opacity(0.5))
             }
             Spacer()
         }
