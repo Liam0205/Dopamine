@@ -16,7 +16,14 @@ Dopamine.tipa: build/Build/Products/Debug-iphoneos/Dopamine.app
 	rm -rf Payload
 
 build/Build/Products/Debug-iphoneos/Dopamine.app: FORCE
-	xcodebuild -scheme Dopamine -derivedDataPath build -destination 'generic/platform=iOS' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+	xcodebuild -scheme Dopamine \
+		-derivedDataPath build \
+		-destination 'generic/platform=iOS' \
+		CODE_SIGN_IDENTITY="" \
+		CODE_SIGNING_REQUIRED=NO \
+		GCC_PREPROCESSOR_DEFINITIONS="GIT_COMMIT_HASH=`git rev-parse --short HEAD` \
+			COMPILE_TIME=`TZ=UTC-8 date \"+%Y%m%d_%H%M%S\"` \
+			BUNDLE_ID=page.liam.Dopamine"
 
 clean:
 	rm -rf build Payload Dopamine.tipa
