@@ -28,6 +28,8 @@ struct AboutView: View {
         ("ProcursusTeam", "http://github.com/ProcursusTeam"),
         ("kirb", "http://github.com/kirb"),
         ("Amy While", "http://github.com/elihwyma"),
+        ("Liam0205", "http://github.com/Liam0205"),
+        ("again_opa334", "http://github.com/opa334"),
     ]
 
     var body: some View {
@@ -131,6 +133,10 @@ struct AboutView: View {
             Group {
                 if !easterEgg {
                     Text("Credits_Footer_Dopamine_Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")\nOS:\(ProcessInfo.processInfo.operatingSystemVersionString)")
+                    Text("Compile Version: " + Constants.commitShortHash() + "\nCompile Time (UTC-8): " + Constants.compileTime())
+                        .fixedSize()
+                        .font(.footnote)
+                        .opacity(0.6)
                 } else {
                     Text(verbatim: "Wait, it's all Evyrest?\nAlways has been.")
                 }
