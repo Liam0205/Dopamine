@@ -1,0 +1,123 @@
+name: "Dopamine: build, upload, release"
+
+on:
+  push:
+    branches:
+      - dopamine
+    paths-ignore:
+      - ".gitignore"
+  pull_request:
+    branches:
+      - dopamine
+    paths-ignore:
+      - ".gitignore"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    environment: Patch AutoBuildRelease
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Procursus
+        uses: dhinakg/procursus-action@main
+        with:
+          packages: ldid trustcache
+
+      - name: Set Environment Variables
+        run: |
+         T8=$(TZ=UTC-8 date +'%Y%m%d_%H%M%S')
+         TS=$(date -j -f "%Y%m%d_%H%M%S" "${T8}" +%s)
+         SHASH=$(git rev-parse --short HEAD)
+         echo "Git commit log since last tag:" > commit_logs.txt
+         echo "\`\`\`" >> commit_logs.txt
+         git log --graph --pretty=format:'%h - %s <%an>' --abbrev-commit $(git describe --tags --abbrev=0).. >> commit_logs.txt
+         echo "" >> commit_logs.txt
+         echo "\`\`\`" >> commit_logs.txt
+         echo "ctime=${T8}" >> $GITHUB_ENV
+         echo "ctimestamp=${TS}" >> $GITHUB_ENV
+         echo "shorthash=${SHASH}" >> $GITHUB_ENV
+
+      - name: Print Environment Variables
+        run: |
+         echo ${{ env.ctime }}
+         echo ${{ env.ctimestamp }}
+         echo ${{ env.shorthash }}
+         cat ./commit_logs.txt
+
+      - name: Build
+        run: |
+          set -x
+          sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
+
+          sed -i '' "s/COMPILE_TIME=\`TZ=UTC-8 date \\\\\"+%Y%m%d_%H%M%S\\\\\"\`/COMPILE_TIME=${{ env.ctime }}/g" ./Dopamine/Makefile
+          sed -i '' "s/GIT_COMMIT_HASH=\`git rev-parse --short HEAD\`/GIT_COMMIT_HASH=${{ env.shorthash }}/g" ./Dopamine/Makefile
+          make
+          cp Dopamine/Dopamine.tipa Dopamine_en.ipa
+          mv Dopamine/Dopamine.tipa Dopamine_en_${{ env.ctime }}.ipa
+
+          git stash
+          git checkout origin/dopamine-cn -b dopamine-cn
+          git rebase origin/dopamine
+
+          sed -i '' "s/COMPILE_TIME=\`TZ=UTC-8 date \\\\\"+%Y%m%d_%H%M%S\\\\\"\`/COMPILE_TIME=${{ env.ctime }}/g" ./Dopamine/Makefile
+          sed -i '' "s/GIT_COMMIT_HASH=\`git rev-parse --short HEAD\`/GIT_COMMIT_HASH=${{ env.shorthash }}/g" ./Dopamine/Makefile
+          make
+          cp Dopamine/Dopamine.tipa Dopamine_cn.ipa
+          mv Dopamine/Dopamine.tipa Dopamine_cn_${{ env.ctime }}.ipa
+
+      - name: Upload
+        run: |
+          set -x
+          curl -L https://github.com/Mikubill/transfer/releases/latest/download/transfer_0.4.17_darwin_amd64.tar.gz | tar xz
+          chmod +x ./transfer
+
+          echo "## Mirrors" >> ./release.md
+          echo "" >> ./release.md
+
+          echo "### cn" >> ./release.md
+          echo "" >> ./release.md
+          DOWNLINK=$(./transfer trs ./Dopamine_cn.ipa | grep Download | cut -f3 -d' ')
+          echo "* <${DOWNLINK}>" >> ./release.md
+          DOWNLINK=$(./transfer cat ./Dopamine_cn.ipa | grep Download | cut -f3 -d' ')
+          echo "* <${DOWNLINK}>" >> ./release.md
+          echo "" >> ./release.md
+
+          echo "### en" >> ./release.md
+          echo "" >> ./release.md
+          DOWNLINK=$(./transfer trs ./Dopamine_en.ipa | grep Download | cut -f3 -d' ')
+          echo "* <${DOWNLINK}>" >> ./release.md
+          DOWNLINK=$(./transfer cat ./Dopamine_en.ipa | grep Download | cut -f3 -d' ')
+          echo "* <${DOWNLINK}>" >> ./release.md
+          echo "" >> ./release.md
+
+          echo "----" >> ./release.md
+          echo "" >> ./release.md
+
+          echo "## Recent changes" >> ./release.md
+          echo "" >> ./release.md
+
+          cat ./commit_logs.txt >> ./release.md
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: auto_${{ env.ctimestamp }}
+          name: "Dopamine: ${{ env.shorthash }}_${{ env.ctime }}"
+          body_path: ./release.md
+          draft: true
+          prerelease: false
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          files: |
+           *.ipa
