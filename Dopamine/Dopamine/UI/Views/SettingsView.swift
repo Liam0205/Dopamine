@@ -16,6 +16,7 @@ struct SettingsView: View {
     @AppStorage("tweakInjection") var tweakInjection: Bool = true
     @AppStorage("enableiDownload") var enableiDownload: Bool = false
     @AppStorage("enableMount") var enableMount: Bool = true
+    @AppStorage("rebuildEnvironment") var rebuildEnvironment: Bool = false
 
     @State var rootPasswordChangeAlertShown = false
     @State var rootPasswordInput = "alpine"
@@ -29,10 +30,11 @@ struct SettingsView: View {
                 .opacity(0.25)
 
             VStack(spacing: 10) {
+                Toggle("Rebuild Environment", isOn: $rebuildEnvironment)
+                Toggle("Enable Path Mapping", isOn: $enableMount)
                 Toggle("Tweak Injection", isOn: $tweakInjection)
                 Toggle("iDownload", isOn: $enableiDownload)
                 Toggle("Verbose Logs", isOn: $verboseLogs)
-                Toggle("Enable Path Mapping", isOn: $enableMount)
 
                 VStack {
                     if isJailbroken() {
