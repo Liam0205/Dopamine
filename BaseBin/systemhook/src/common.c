@@ -12,6 +12,10 @@
 
 #define POSIX_SPAWN_PROC_TYPE_DRIVER 0x700
 int posix_spawnattr_getprocesstype_np(const posix_spawnattr_t * __restrict, int * __restrict) __API_AVAILABLE(macos(10.8), ios(6.0));
+static const char* kPathArrayZPUnjectPlist[] = {
+  "/var/mobile/zp.unject.plist",
+  "/var/mobile/Library/Preferences/zp.unject.plist",
+};
 
 char *JB_SandboxExtensions = NULL;
 char *JB_RootPath = NULL;
@@ -218,7 +222,7 @@ int64_t jbdswDebugMe(void)
 		if (sandbox_check(getpid(), "process-fork", SANDBOX_CHECK_NO_REPORT, NULL) == 0) {
 			loadForkFix();
 		}
-	} 
+	}
 	return result;
 }
 
@@ -362,11 +366,49 @@ void enumeratePathString(const char *pathsString, void (^enumBlock)(const char *
 	free(pathsCopy);
 }
 
-typedef enum 
+typedef enum
 {
 	kBinaryConfigDontInject = 1 << 0,
 	kBinaryConfigDontProcess = 1 << 1
 } kBinaryConfig;
+
+// unject
+extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
+bool unject(const char *str) {
+  void *addr = NULL;
+  struct stat s = {};
+  int fd = 0;
+  int size = sizeof(kPathArrayZPUnjectPlist) / sizeof(kPathArrayZPUnjectPlist[0]);
+  for (int i = 0; i != size && !(fd > 0); ++i) {
+    const char* path = kPathArrayZPUnjectPlist[i];
+    fd = open(path, O_RDONLY);
+  }
+  if (fd < 0) {
+    return false;
+  }
+  if (fstat(fd, &s) != 0) {
+    close(fd);
+    return false;
+  }
+  addr = mmap(NULL, s.st_size, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0);
+  if (addr != MAP_FAILED) {
+    xpc_object_t xplist = xpc_create_from_plist(addr, s.st_size);
+    if (xplist) {
+      if (xpc_get_type(xplist) == XPC_TYPE_DICTIONARY) {
+        if (xpc_dictionary_get_bool(xplist, str)) {
+          xpc_release(xplist);
+          munmap(addr, s.st_size);
+          close(fd);
+          return true;
+        }
+      }
+    }
+    xpc_release(xplist);
+    munmap(addr, s.st_size);
+  }
+  close(fd);
+  return false;
+}
 
 kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 {
@@ -405,6 +447,26 @@ kBinaryConfig configForBinary(const char* path, char *const argv[restrict])
 	{
 		if (!strcmp(processBlacklist[i], path)) return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
 	}
+
+  // blacklist plist; inspired by @真皮
+  int size = sizeof(kPathArrayZPUnjectPlist) / sizeof(kPathArrayZPUnjectPlist[0]);
+  bool exists = false;
+  for (int i = 0; i != size && !exists; ++i) {
+    exists = (access(kPathArrayZPUnjectPlist[i], F_OK) == 0);
+  }
+  if (exists) {
+    if (strstr(path, "/var/jb") == NULL && strstr(path, "procursus") == NULL) {
+      // unject Plugins
+      if (strstr(path, ".appex/") != NULL) return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+      // unject in the blacklist
+      char *exe_name = strrchr(path, '/');
+      if (exe_name != NULL) {
+        if (unject(++exe_name)) {
+          return (kBinaryConfigDontInject | kBinaryConfigDontProcess);
+        }
+      }
+    }
+  }
 
 	return 0;
 }
