@@ -8,17 +8,18 @@
 import SwiftUI
 
 struct SettingsView: View {
-    
+
     @AppStorage("totalJailbreaks") var totalJailbreaks: Int = 0
     @AppStorage("successfulJailbreaks") var successfulJailbreaks: Int = 0
-    
+
     @AppStorage("verboseLogs") var verboseLogs: Bool = false
     @AppStorage("tweakInjection") var tweakInjection: Bool = true
     @AppStorage("enableiDownload") var enableiDownload: Bool = false
-    
+    @AppStorage("enableMount") var enableMount: Bool = true
+
     @State var rootPasswordChangeAlertShown = false
     @State var rootPasswordInput = "alpine"
-    
+
     var body: some View {
         VStack {
             Text("Settings")
@@ -26,12 +27,13 @@ struct SettingsView: View {
                 .background(.white)
                 .padding(.horizontal, 32)
                 .opacity(0.25)
-            
+
             VStack(spacing: 10) {
                 Toggle("Tweak Injection", isOn: $tweakInjection)
                 Toggle("iDownload", isOn: $enableiDownload)
                 Toggle("Verbose Logs", isOn: $verboseLogs)
-                
+                Toggle("Enable Path Mapping", isOn: $enableMount)
+
                 VStack {
                     if isJailbroken() {
                         Button(action: {
@@ -93,7 +95,7 @@ struct SettingsView: View {
             .tint(.accentColor)
             .padding(.vertical, 16)
             .padding(.horizontal, 32)
-            
+
             Divider()
                 .background(.white)
                 .padding(.horizontal, 32)
@@ -107,18 +109,18 @@ struct SettingsView: View {
                     .opacity(0.6)
             }
             .padding(.top, 2)
-            
-            
+
+
             ZStack {}
                 .textFieldAlert(isPresented: $rootPasswordChangeAlertShown) { () -> TextFieldAlert in
                     TextFieldAlert(title: "Change root password", message: "", text: Binding<String?>($rootPasswordInput))
                 }
                 .frame(maxHeight: 0)
-            
+
         }
         .foregroundColor(.white)
     }
-    
+
     func successRate() -> String {
         if totalJailbreaks == 0 {
             return "-"

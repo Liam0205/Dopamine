@@ -13,12 +13,10 @@ int main(int argc, char* argv[])
 		int64_t result = jbdProcSetDebugged(getpid());
 		if (result == 0) {
 			printf("Successfully marked proc of pid %d as debugged\n", pid);
-		}
-		else {
+		} else {
 			printf("Failed to mark proc of pid %d as debugged\n", pid);
 		}
-	}
-	else if (!strcmp(cmd, "rebuild_trustcache")) {
+	} else if (!strcmp(cmd, "rebuild_trustcache")) {
 		jbdRebuildTrustCache();
 	} else if (!strcmp(cmd, "init_environment")) {
 		jbdInitEnvironment(nil);
@@ -35,11 +33,12 @@ int main(int argc, char* argv[])
 			printf("Update applied, userspace rebooting to finalize it...\n");
 			usleep(5000);
 			execve("/var/jb/usr/bin/launchctl", (char *const[]){ "/var/jb/usr/bin/launchctl", "reboot", "userspace", NULL }, environ);
-		}
-		else {
+		} else {
 			printf("Update failed with error code %lld\n", result);
 			return result;
 		}
+	} else if (!strcmp(cmd, "update_bindmount")) {
+		jbdUpdateBindMount();
 	}
 
 	return 0;

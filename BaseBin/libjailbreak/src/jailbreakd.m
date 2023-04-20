@@ -158,6 +158,10 @@ int64_t jbdInitEnvironment(NSDictionary *settings)
 	// TODO: pass settings
 	//xpc_dictionary_set_string(message, "source", source);
 	//xpc_dictionary_set_string(message, "target", target);
+	if (settings != nil) {
+		bool enableMount = [[settings objectForKey:@"enableMount"] boolValue];
+		xpc_dictionary_set_bool(message, "enableMount", enableMount);
+	}
 
 	xpc_object_t reply = sendJBDMessage(message);
 	return xpc_dictionary_get_int64(reply, "result");
@@ -236,4 +240,10 @@ int64_t jbdProcSetDebugged(pid_t pid)
 
 	xpc_object_t reply = sendJBDMessage(message);
 	return xpc_dictionary_get_int64(reply, "result");
+}
+
+void jbdUpdateBindMount(void) {
+  xpc_object_t message = xpc_dictionary_create_empty();
+  xpc_dictionary_set_uint64(message, "id", JBD_MSG_UPDATE_BINDMOUNT);
+  sendJBDMessage(message);
 }

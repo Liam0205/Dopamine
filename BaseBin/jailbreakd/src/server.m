@@ -81,7 +81,7 @@ int processBinary(NSString *binaryPath)
 				};
 
 				tcCheckBlock(binaryPath);
-				
+
 				machoEnumerateDependencies(machoFile, bestArch, binaryPath, tcCheckBlock);
 
 				dynamicTrustCacheUploadCDHashesFromArray(nonTrustCachedCDHashes);
@@ -206,6 +206,70 @@ void generateSystemWideSandboxExtensions(NSString *targetPath)
 	JBLogDebug("rc %d", rc);
 }*/
 
+int registerJbPrefixedPath(NSString *sourcePath) {
+  NSString *jbPrefixedPath = [[NSString alloc] initWithFormat:@"%@%@", @"/var/jb", sourcePath];
+  JBLogDebug("Start to registerJbPrefixedPath, from [%s] to [%s].", sourcePath.UTF8String,
+             jbPrefixedPath.UTF8String);
+
+  NSFileManager *fm = [NSFileManager defaultManager];
+  if ([fm contentsOfDirectoryAtPath:jbPrefixedPath error:nil].count == 0) {
+    // jbPrefixedPath exists, but directory is empty.
+    JBLogDebug("Removing empty jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
+    [fm removeItemAtPath:jbPrefixedPath error:nil];
+  }
+
+  if (![fm fileExistsAtPath:jbPrefixedPath]) {
+    // two cases: 1) this is the first time we need to create this path; 2) just removed an empty directory.
+    JBLogDebug("Creating and Copying contents to jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
+    [fm createDirectoryAtPath:jbPrefixedPath withIntermediateDirectories:YES attributes:nil error:nil];
+    [fm removeItemAtPath:jbPrefixedPath error:nil];
+    [fm copyItemAtPath:sourcePath toPath:jbPrefixedPath error:nil];
+  }
+
+  JBLogDebug("Binding and mounting jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
+  bindMount(sourcePath.fileSystemRepresentation, jbPrefixedPath.fileSystemRepresentation);
+  return 0;
+}
+
+int64_t updateBindMount() {
+	NSString *prefixersPlist = @"/var/mobile/prefixers.plist";
+	NSString *updatePrefixersPlist = @"/var/mobile/update.prefixers.plist";
+
+	NSFileManager *fm = [NSFileManager defaultManager];
+	if (![fm fileExistsAtPath:prefixersPlist]) {
+		return 1;
+	} else if (![fm fileExistsAtPath:updatePrefixersPlist]) {
+		return 2;
+	}
+
+	NSMutableDictionary* current = [[NSMutableDictionary alloc] initWithContentsOfFile:prefixersPlist];
+	NSDictionary* target = [[NSDictionary alloc] initWithContentsOfFile:updatePrefixersPlist];
+	NSMutableArray* current_sources = [current objectForKey:@"source"];
+	NSArray* target_sources = [target objectForKey:@"source"];
+	NSSet* dedup_set = [NSSet setWithArray:current_sources];
+	NSMutableArray* todo = [[NSMutableArray alloc] init];
+
+	// deduplicate, as target_sources might contain source paths that are already in current_sources
+	for (int i = 0; i != [target_sources count]; ++i) {
+		NSString* source = [target_sources objectAtIndex:i];
+		if (![dedup_set containsObject:source]) {
+			[todo addObject:source];
+		}
+	}
+
+	for (int i = 0; i != [todo count]; ++i) {
+		NSString* source = [todo objectAtIndex:i];
+		if (0 == registerJbPrefixedPath(source)) {
+			[current_sources addObject:source];
+		}
+	}
+
+	[current writeToFile:prefixersPlist atomically:YES];
+	[fm removeItemAtPath:updatePrefixersPlist error:nil];
+
+	return 0;
+}
+
 int64_t initEnvironment(NSDictionary *settings)
 {
 	NSString *fakeLibPath = @"/var/jb/basebin/.fakelib";
@@ -221,7 +285,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	if (dyldRet != 0) {
 		return 1 + dyldRet;
 	}
-	
+
 	NSData *dyldCDHash;
 	evaluateSignature([NSURL fileURLWithPath:@"/var/jb/basebin/.fakelib/dyld"], &dyldCDHash, nil);
 	if (!dyldCDHash) {
@@ -254,6 +318,39 @@ int64_t initEnvironment(NSDictionary *settings)
 		return 8;
 	}
 
+  bool enableMount = [[settings objectForKey:@"enableMount"] boolValue];
+  if (enableMount) {
+    NSString *prefixersPlist = @"/var/mobile/prefixers.plist";
+    if (![[NSFileManager defaultManager] fileExistsAtPath:prefixersPlist]) {
+      NSArray *paths = [[NSArray alloc] initWithObjects:
+                          @"/System/Library/Fonts",
+                          @"/System/Library/PrivateFrameworks/CoverSheet.framework/zh_CN.lproj",
+                          @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/zh_CN.lproj",
+                          @"/System/Library/PrivateFrameworks/UserNotificationsUIKit.framework/zh_CN.lproj",
+                          nil];
+      NSDictionary *map = [[NSDictionary alloc] initWithObjectsAndKeys:paths, @"source", nil];
+      [map writeToFile:prefixersPlist atomically:YES];
+      NSDictionary *ownship = [NSDictionary dictionaryWithObjectsAndKeys:
+                                @"mobile",NSFileOwnerAccountName,
+                                @"mobile",NSFileGroupOwnerAccountName,
+                                nil];
+      [[NSFileManager defaultManager] setAttributes:ownship ofItemAtPath:prefixersPlist error:nil];
+    }
+
+    NSDictionary *sorucePathDict = [[NSDictionary alloc] initWithContentsOfFile:prefixersPlist];
+    if (sorucePathDict) {
+      NSArray *sourchPaths = [sorucePathDict objectForKey:@"source"];
+      for (int i = 0; i < [sourchPaths count]; i++) {
+        // we do not care, if any of these paths failed to register.
+        NSString *sourcePath = [sourchPaths objectAtIndex:i];
+        int ret = registerJbPrefixedPath(sourcePath);
+        if (ret != 0) {
+          JBLogDebug("Failed to bindMount: %s.", sourcePath.UTF8String);
+        }
+      }
+    }
+  }
+
 	return 0;
 }
 
@@ -282,7 +379,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 			JBLogDebug("received %s message %d with dictionary: %s", systemwide ? "systemwide" : "", msgId, description);
 			free(description);
 
-			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
+			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY ||
 									msgId == JBD_MSG_DEBUG_ME ||
 									msgId == JBD_MSG_SETUID_FIX ||
 									msgId == JBD_MSG_FORK_FIX;
@@ -294,7 +391,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						xpc_dictionary_set_uint64(reply, "kcallStatus", gKCallStatus);
 						break;
 					}
-					
+
 					case JBD_MSG_PPL_INIT: {
 						if (gPPLRWStatus == kPPLRWStatusNotInitialized) {
 							uint64_t magicPage = xpc_dictionary_get_uint64(message, "magicPage");
@@ -304,7 +401,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						}
 						break;
 					}
-					
+
 					case JBD_MSG_PAC_INIT: {
 						if (gKCallStatus == kKcallStatusNotInitialized && gPPLRWStatus == kPPLRWStatusInitialized) {
 							uint64_t kernelAllocation = bootInfo_getUInt64(@"jailbreakd_pac_allocation");
@@ -315,14 +412,14 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 							break;
 						}
 					}
-					
+
 					case JBD_MSG_PAC_FINALIZE: {
 						if (gKCallStatus == kKcallStatusPrepared && gPPLRWStatus == kPPLRWStatusInitialized) {
 							finalizePACPrimitives();
 						}
 						break;
 					}
-					
+
 					case JBD_MSG_HANDOFF_PPL: {
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							uint64_t magicPage = 0;
@@ -339,7 +436,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						}
 						break;
 					}
-					
+
 					case JBD_MSG_DO_KCALL: {
 						if (gKCallStatus == kKcallStatusFinalized) {
 							uint64_t func = xpc_dictionary_get_uint64(message, "func");
@@ -391,7 +488,12 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 					case JBD_MSG_INIT_ENVIRONMENT: {
 						int64_t result = 0;
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
-							result = initEnvironment(nil);
+							bool enableMount = xpc_dictionary_get_bool(message, "enableMount");
+							NSDictionary* settings = nil;
+							if (enableMount) {
+								settings = @{@"enableMount": @(enableMount)};
+							}
+							result = initEnvironment(settings);
 						}
 						else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
@@ -497,6 +599,17 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 							result = apply_fork_fixup(clientPid, childPid, mightHaveDirtyPages);
 						}
 						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
+					}
+
+					case JBD_MSG_UPDATE_BINDMOUNT: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							result = updateBindMount();
+						} else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
 						}
 						xpc_dictionary_set_int64(reply, "result", result);
