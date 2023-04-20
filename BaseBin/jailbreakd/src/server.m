@@ -206,6 +206,70 @@ void generateSystemWideSandboxExtensions(NSString *targetPath)
 	JBLogDebug("rc %d", rc);
 }*/
 
+int registerJbPrefixedPath(NSString *sourcePath) {
+  NSString *jbPrefixedPath = [[NSString alloc] initWithFormat:@"%@%@", @"/var/jb", sourcePath];
+  JBLogDebug("Start to registerJbPrefixedPath, from [%s] to [%s].", sourcePath.UTF8String,
+             jbPrefixedPath.UTF8String);
+
+  NSFileManager *fm = [NSFileManager defaultManager];
+  if ([fm contentsOfDirectoryAtPath:jbPrefixedPath error:nil].count == 0) {
+    // jbPrefixedPath exists, but directory is empty.
+    JBLogDebug("Removing empty jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
+    [fm removeItemAtPath:jbPrefixedPath error:nil];
+  }
+
+  if (![fm fileExistsAtPath:jbPrefixedPath]) {
+    // two cases: 1) this is the first time we need to create this path; 2) just removed an empty directory.
+    JBLogDebug("Creating and Copying contents to jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
+    [fm createDirectoryAtPath:jbPrefixedPath withIntermediateDirectories:YES attributes:nil error:nil];
+    [fm removeItemAtPath:jbPrefixedPath error:nil];
+    [fm copyItemAtPath:sourcePath toPath:jbPrefixedPath error:nil];
+  }
+
+  JBLogDebug("Binding and mounting jbPrefixedPath[%s].", jbPrefixedPath.UTF8String);
+  bindMount(sourcePath.fileSystemRepresentation, jbPrefixedPath.fileSystemRepresentation);
+  return 0;
+}
+
+int64_t updateBindMount() {
+	NSString *prefixersPlist = @"/var/mobile/prefixers.plist";
+	NSString *updatePrefixersPlist = @"/var/mobile/update.prefixers.plist";
+
+	NSFileManager *fm = [NSFileManager defaultManager];
+	if (![fm fileExistsAtPath:prefixersPlist]) {
+		return 1;
+	} else if (![fm fileExistsAtPath:updatePrefixersPlist]) {
+		return 2;
+	}
+
+	NSMutableDictionary* current = [[NSMutableDictionary alloc] initWithContentsOfFile:prefixersPlist];
+	NSDictionary* target = [[NSDictionary alloc] initWithContentsOfFile:updatePrefixersPlist];
+	NSMutableArray* current_sources = [current objectForKey:@"source"];
+	NSArray* target_sources = [target objectForKey:@"source"];
+	NSSet* dedup_set = [NSSet setWithArray:current_sources];
+	NSMutableArray* todo = [[NSMutableArray alloc] init];
+
+	// deduplicate, as target_sources might contain source paths that are already in current_sources
+	for (int i = 0; i != [target_sources count]; ++i) {
+		NSString* source = [target_sources objectAtIndex:i];
+		if (![dedup_set containsObject:source]) {
+			[todo addObject:source];
+		}
+	}
+
+	for (int i = 0; i != [todo count]; ++i) {
+		NSString* source = [todo objectAtIndex:i];
+		if (0 == registerJbPrefixedPath(source)) {
+			[current_sources addObject:source];
+		}
+	}
+
+	[current writeToFile:prefixersPlist atomically:YES];
+	[fm removeItemAtPath:updatePrefixersPlist error:nil];
+
+	return 0;
+}
+
 int64_t initEnvironment(NSDictionary *settings)
 {
 	NSString *fakeLibPath = @"/var/jb/basebin/.fakelib";
@@ -221,7 +285,7 @@ int64_t initEnvironment(NSDictionary *settings)
 	if (dyldRet != 0) {
 		return 1 + dyldRet;
 	}
-	
+
 	NSData *dyldCDHash;
 	evaluateSignature([NSURL fileURLWithPath:@"/var/jb/basebin/.fakelib/dyld"], &dyldCDHash, nil);
 	if (!dyldCDHash) {
@@ -253,6 +317,40 @@ int64_t initEnvironment(NSDictionary *settings)
 	if (bindMountRet != 0) {
 		return 8;
 	}
+
+  BOOL mountFonts = ![[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/.nofonts"];
+  if (mountFonts) {
+    JBLogDebug("Does not detected .nofont, start to bind mount the font path.");
+    int ret = registerJbPrefixedPath(@"/System/Library/Fonts");
+    if (ret > 0) {
+      return 8 + ret;
+    }
+  }
+
+  NSString *prefixersPlist = @"/var/mobile/prefixers.plist";
+  if (![[NSFileManager defaultManager] fileExistsAtPath:prefixersPlist]) {
+    NSArray *paths = [[NSArray alloc] initWithObjects:
+		                    @"/System/Library/PrivateFrameworks/CoverSheet.framework/zh_CN.lproj",
+                        @"/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/zh_CN.lproj",
+                        @"/System/Library/PrivateFrameworks/UserNotificationsUIKit.framework/zh_CN.lproj",
+                        nil];
+    NSDictionary *map = [[NSDictionary alloc] initWithObjectsAndKeys:paths, @"source", nil];
+    [map writeToFile:prefixersPlist atomically:YES];
+    NSDictionary *ownship = [NSDictionary dictionaryWithObjectsAndKeys:
+                              @"mobile",NSFileOwnerAccountName,
+                              @"mobile",NSFileGroupOwnerAccountName,
+                              nil];
+    [[NSFileManager defaultManager] setAttributes:ownship ofItemAtPath:prefixersPlist error:nil];
+  }
+
+  NSDictionary *sorucePathDict = [[NSDictionary alloc] initWithContentsOfFile:prefixersPlist];
+  if (sorucePathDict) {
+    NSArray *sourchPaths = [sorucePathDict objectForKey:@"source"];
+    for (int i = 0; i < [sourchPaths count]; i++) {
+      // we do not care, if any of these paths failed to register.
+      registerJbPrefixedPath([sourchPaths objectAtIndex:i]);
+    }
+  }
 
 	return 0;
 }
