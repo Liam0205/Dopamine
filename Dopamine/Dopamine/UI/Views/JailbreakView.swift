@@ -18,51 +18,51 @@ import Fugu15KernelExploit
 import SwiftfulLoadingIndicators
 
 struct JailbreakView: View {
-    
+
     enum JailbreakingProgress: Equatable {
         case idle, jailbreaking, selectingPackageManager, finished
     }
-    
+
     struct MenuOption: Identifiable, Equatable {
-        
+
         static func == (lhs: JailbreakView.MenuOption, rhs: JailbreakView.MenuOption) -> Bool {
             lhs.id == rhs.id
         }
-        
+
         var id: String
-        
+
         var imageName: String
         var title: String
         var showUnjailbroken: Bool = true
-        
-        
+
+
         var action: (() -> ())? = nil
     }
-    
+
     @State var isSettingsPresented = false
     @State var isCreditsPresented = false
-    
+
     @State var jailbreakingProgress: JailbreakingProgress = .idle
     @State var jailbreakingError: Error?
-    
+
     @State var updateAvailable = false
     @State var showingUpdatePopupType: UpdateType? = nil
-    
-    
+
+
     @State var updateChangelog: String? = nil
     @State var mismatchChangelog: String? = nil
-    
+
     @State var aprilFirstAlert = whatCouldThisVariablePossiblyEvenMean
-    
+
     @AppStorage("verboseLogsEnabled", store: dopamineDefaults()) var advancedLogsByDefault: Bool = false
     @State var advancedLogsTemporarilyEnabled: Bool = false
-    
+
     var isJailbreaking: Bool {
         jailbreakingProgress != .idle
     }
-    
+
     var requiresEnvironmentUpdate = isInstalledEnvironmentVersionMismatching() && isJailbroken()
-    
+
 //    init() {
 //        menuOptions = [
 //            .init(imageName: "gearshape", title: NSLocalizedString("Menu_Settings_Title", comment: ""), view: AnyView(SettingsView())),
@@ -71,24 +71,24 @@ struct JailbreakView: View {
 //            .init(imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: ""), view: AnyView(AboutView())),
 //        ]
 //    }
-    
-    
+
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                
+
                 let isPopupPresented = isSettingsPresented || isCreditsPresented
-                
+
                 Image(whatCouldThisVariablePossiblyEvenMean ? "Clouds" : "Wallpaper")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .edgesIgnoringSafeArea(.all)
                     .blur(radius: 4)
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                
+
                     .scaleEffect(isPopupPresented ? 1.2 : 1.4)
                     .animation(.spring(), value: isPopupPresented)
-                
+
                 if showingUpdatePopupType == nil {
                     VStack {
                         Spacer()
@@ -118,7 +118,7 @@ struct JailbreakView: View {
                     .transition(.opacity)
                     .zIndex(1)
                 }
-                
+
                 PopupView(title: {
                     Text("Menu_Settings_Title")
                 }, contents: {
@@ -126,8 +126,8 @@ struct JailbreakView: View {
                         .frame(maxWidth: 320)
                 }, isPresented: $isSettingsPresented)
                 .zIndex(2)
-                
-                
+
+
                 PopupView(title: {
                     VStack(spacing: 4) {
                         Text("Credits_Made_By")
@@ -141,8 +141,8 @@ struct JailbreakView: View {
                         .frame(maxWidth: 320)
                 }, isPresented: $isCreditsPresented)
                 .zIndex(2)
-                
-                
+
+
                 UpdateDownloadingView(type: $showingUpdatePopupType, changelog: updateChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: ""), mismatchChangelog: mismatchChangelog ?? NSLocalizedString("Changelog_Unavailable_Text", comment: ""))
 
 //
@@ -182,8 +182,8 @@ struct JailbreakView: View {
             }
         }
     }
-    
-    
+
+
     @ViewBuilder
     var header: some View {
         let tint = whatCouldThisVariablePossiblyEvenMean ? Color.black : .white
@@ -194,7 +194,7 @@ struct JailbreakView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: 200)
                     .padding(.top)
-                
+
                 Text("Title_Supported_iOS_Versions")
                     .font(.subheadline)
                     .foregroundColor(tint)
@@ -208,7 +208,7 @@ struct JailbreakView: View {
         .frame(maxWidth: 340, maxHeight: nil)
         .animation(.spring(), value: isJailbreaking)
     }
-    
+
     @ViewBuilder
     var menu: some View {
         VStack {
@@ -216,6 +216,7 @@ struct JailbreakView: View {
                 .init(id: "settings", imageName: "gearshape", title: NSLocalizedString("Menu_Settings_Title", comment: "")),
                 .init(id: "respring", imageName: "arrow.clockwise", title: NSLocalizedString("Menu_Restart_SpringBoard_Title", comment: ""), showUnjailbroken: false, action: respring),
                 .init(id: "userspace", imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: userspaceReboot),
+                .init(id: "reboot", imageName: "arrow.clockwise.circle.fill", title: NSLocalizedString("Menu_Reboot_Title", comment: ""), showUnjailbroken: false, action: doReboot),
                 .init(id: "credits", imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: "")),
             ]
             ForEach(menuOptions) { option in
@@ -236,9 +237,9 @@ struct JailbreakView: View {
                     HStack {
                         Label(title: { Text(option.title) }, icon: { Image(systemName: option.imageName) })
                             .foregroundColor(Color.white)
-                        
+
                         Spacer()
-                        
+
                         if option.action == nil {
                             Image(systemName: Locale.characterDirection(forLanguage: Locale.current.languageCode ?? "") == .rightToLeft ? "chevron.left" : "chevron.right")
                                 .font(.body)
@@ -252,10 +253,20 @@ struct JailbreakView: View {
                     .frame(maxWidth: .infinity)
                     .padding(16)
                     .background(Color(red: 1, green: 1, blue: 1, opacity: 0.00001))
+                    .contextMenu(
+                      option.id == "userspace"
+                      ? ContextMenu {
+                        Button(action: doLdrestart,
+                                label: {Label("Menu_ldrestart_Title", systemImage: "arrow.counterclockwise.circle")})
+                        Button(action: doUpdateEnvironment,
+                                label: {Label("Menu_Update_Environment_Title", systemImage: "arrow.counterclockwise.circle.fill")})
+                      }
+                      : nil
+                    )
                 }
                 .buttonStyle(.plain)
                 .disabled(!option.showUnjailbroken && !isJailbroken())
-                
+
                 if menuOptions.last != option {
                     Divider()
                         .background(.white)
@@ -271,13 +282,13 @@ struct JailbreakView: View {
         .opacity(isJailbreaking ? 0 : 1)
         .animation(.spring(), value: isJailbreaking)
     }
-    
+
     @ViewBuilder
     var bottomSection: some View {
         VStack {
             Button {
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                
+
                 if requiresEnvironmentUpdate {
                     showingUpdatePopupType = .environment
                 } else {
@@ -315,7 +326,7 @@ struct JailbreakView: View {
                     } else {
                         Text("Unsupported")
                     }
-                    
+
                 }, icon: {
                     if Fugu15.supportsThisDeviceBool() {
                         if !requiresEnvironmentUpdate {
@@ -348,7 +359,7 @@ struct JailbreakView: View {
             }
             .disabled((isJailbroken() || isJailbreaking || !Fugu15.supportsThisDeviceBool()) && !requiresEnvironmentUpdate)
             .drawingGroup()
-            
+
             if jailbreakingProgress == .finished || jailbreakingProgress == .jailbreaking {
                 Spacer()
                 LogView(advancedLogsTemporarilyEnabled: $advancedLogsTemporarilyEnabled, advancedLogsByDefault: $advancedLogsByDefault)
@@ -371,7 +382,7 @@ struct JailbreakView: View {
         )
         .animation(.spring(), value: isJailbreaking)
     }
-    
+
     @ViewBuilder
     var endButtons: some View {
         switch jailbreakingProgress {
@@ -416,7 +427,7 @@ struct JailbreakView: View {
             Group {}
         }
     }
-    
+
     @ViewBuilder
     var updateButton: some View {
         Button {
@@ -438,7 +449,7 @@ struct JailbreakView: View {
         .opacity(updateAvailable && jailbreakingProgress == .idle ? 1 : 0)
         .animation(.spring(), value: updateAvailable)
     }
-    
+
     func uiJailbreak() {
         jailbreakingProgress = .jailbreaking
         let dpDefaults = dopamineDefaults()
@@ -447,19 +458,19 @@ struct JailbreakView: View {
         
         DispatchQueue(label: "Dopamine").async {
             sleep(1)
-            
+
             jailbreak { e in
                 jailbreakingProgress = .finished
                 jailbreakingError = e
-                
+
                 if e == nil {
                     dpDefaults.set(dpDefaults.integer(forKey: "successful_jailbreaks") + 1, forKey: "successful_jailbreaks")
                     dpDefaults.synchronize()
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                     let tweakInjectionEnabled = dpDefaults.bool(forKey: "tweakInjectionEnabled")
-                    
+
                     Logger.log(NSLocalizedString("Restarting Userspace", comment: ""), type: .continuous, isStatus: true)
-                    
+
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         if tweakInjectionEnabled {
                             userspaceReboot()
@@ -474,7 +485,7 @@ struct JailbreakView: View {
             }
         }
     }
-    
+
     func getDeltaChangelog(json: [[String : Any]], fromVersion: String?, toVersion: String?) -> String? {
         var include: Bool = toVersion == nil
         var changelogBuf: String = ""
@@ -486,13 +497,13 @@ struct JailbreakView: View {
                         include = true
                     }
                 }
-                
+
                 if fromVersion != nil {
                     if versionString! == fromVersion {
                         include = false
                     }
                 }
-                
+
                 if include {
                     let changelog = item["body"] as? String
                     if changelog != nil {
@@ -518,7 +529,7 @@ struct JailbreakView: View {
             userOrientedChangelog += "\n\n\n" + NSLocalizedString("Title_Changelog", comment: "") + ":\n\n"
         }
         else {
-            
+
         }
 
         // Changelog
@@ -526,12 +537,12 @@ struct JailbreakView: View {
 
         return userOrientedChangelog
     }
-    
+
     func checkForUpdates() async throws {
         if let currentAppVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             let owner = "opa334"
             let repo = "Dopamine"
-            
+
             // Get the releases
             let releasesURL = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/releases")!
             let releasesRequest = URLRequest(url: releasesURL)
@@ -539,7 +550,7 @@ struct JailbreakView: View {
             guard let releasesJSON = try JSONSerialization.jsonObject(with: releasesData, options: []) as? [[String: Any]] else {
                 return
             }
-            
+
             if let latestTag = releasesJSON.first?["tag_name"] as? String, latestTag != currentAppVersion {
                 updateAvailable = true
                 updateChangelog = createUserOrientedChangelog(deltaChangelog: getDeltaChangelog(json: releasesJSON, fromVersion: currentAppVersion, toVersion: nil), environmentMismatch: false)
