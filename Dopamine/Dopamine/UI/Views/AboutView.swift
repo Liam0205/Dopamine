@@ -10,33 +10,36 @@ import SwiftUI
 struct AboutView: View {
     @Environment(\.openURL) var openURL
     @AppStorage("sfw") var sfw = false
-    
+
     let columns = [
         GridItem(.adaptive(minimum: 80))
     ]
-    
+
     let contributors = [
         ("opa334", "http://github.com/opa334"),
         ("evelyneee", "http://github.com/evelyneee"),
         ("sourcelocation", "http://github.com/sourcelocation"),
         ("LinusHenze", "http://github.com/LinusHenze"),
+        ("Liam0205", "http://github.com/Liam0205"),
         ("anotherperson", "http://github.com/opa334"),
-        ("randomperson", "http://github.com/opa334"),
     ]
-    
+
     var body: some View {
         VStack {
             VStack(spacing: 4) {
                 Text("Made by by opa334, évelyne")
-                Text("UI by sourcelocation\n Logo and icon by xerus")
+                Text("UI by sourcelocation\n Logo by xerus")
                     .font(.footnote)
                     .opacity(0.6)
+                Text("Translation and icon by Liam0205")
+                    .font(.footnote)
+                    .opacity(0.4)
             }
             Divider()
                 .background(.white)
                 .padding(.horizontal, 32)
                 .opacity(0.25)
-            
+
             VStack {
                 Button(action: {
                     openURL(URL(string: "https://github.com/opa334/Dopamine")!)
@@ -72,7 +75,7 @@ struct AboutView: View {
                 }
             }
             .padding(.vertical)
-            
+
             LazyVGrid(columns: columns) {
                 ForEach(contributors, id: \.0) { contributor in
                     Link(destination: URL(string: contributor.1)!) {
@@ -88,13 +91,13 @@ struct AboutView: View {
             .opacity(0.6)
             .padding(.bottom)
             .padding(.horizontal, 16)
-            
-            
+
+
             Text("Special thanks:")
                 .fixedSize()
                 .font(.footnote)
                 .opacity(0.6)
-            
+
             HStack(spacing: 12) {
                 Button {
                     openURL(URL(string: "https://github.com/pinauten/Fugu15")!)
@@ -105,7 +108,7 @@ struct AboutView: View {
                         .frame(height: 24)
                         .opacity(0.5)
                 }
-                
+
                 Button {
                     openURL(URL(string: "https://pinauten.de/")!)
                 } label: {
@@ -118,6 +121,10 @@ struct AboutView: View {
             }
             .padding(.bottom)
             Text("\(sfw ? "OpaA15" : "Dopamine") version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")\n\(ProcessInfo.processInfo.operatingSystemVersionString)")
+                .fixedSize()
+                .font(.footnote)
+                .opacity(0.6)
+            Text("Compile Version: " + Constants.commitShortHash() + "\nCompile Time (UTC-8): " + Constants.compileTime())
                 .fixedSize()
                 .font(.footnote)
                 .opacity(0.6)
