@@ -17,47 +17,47 @@ import Fugu15KernelExploit
 import SwiftfulLoadingIndicators
 
 struct ContentView: View {
-    
+
     enum JailbreakingProgress: Equatable {
         case idle, jailbreaking, selectingPackageManager, finished
     }
-    
+
     struct MenuOption: Identifiable, Equatable {
-        
+
         static func == (lhs: ContentView.MenuOption, rhs: ContentView.MenuOption) -> Bool {
             lhs.id == rhs.id
         }
-        
+
         var id = UUID()
-        
+
         var imageName: String
         var title: String
         var view: AnyView? = nil
         var showUnjailbroken: Bool = true
-        
-        
+
+
         var action: (() -> ())? = nil
     }
-    
+
     @State var optionPresentedID: UUID?
     @State var jailbreakingProgress: JailbreakingProgress = .idle
     @State var jailbreakingError: Error?
-    
+
     @State var updateAvailable = false
     @State var showingUpdatePopup = false
     @State var updateChangelog: String? = nil
-    
+
     @AppStorage("verboseLogs") var advancedLogsByDefault: Bool = false
     @State var advancedLogsTemporarilyEnabled: Bool = false
-    
+
     var isJailbreaking: Bool {
         jailbreakingProgress != .idle
     }
-    
+
     @AppStorage("sfw") var sfw = false
-    
+
     var menuOptions: [MenuOption] = []
-    
+
     init() {
         menuOptions = [
             .init(imageName: "gearshape", title: "Settings", view: AnyView(SettingsView())),
@@ -65,29 +65,29 @@ struct ContentView: View {
             .init(imageName: "arrow.clockwise.circle", title: "Reboot Userspace", showUnjailbroken: false, action: userspaceReboot),
             .init(imageName: "info.circle", title: "Credits", view: AnyView(AboutView())),
         ]
-        
+
         UserDefaults.standard.register(defaults: [
             "tweakInjection": true,
         ])
     }
-    
-    
+
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                
+
                 let shouldShowBackground = optionPresentedID != nil || showingUpdatePopup
-                
+
                 Image("Wallpaper")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .edgesIgnoringSafeArea(.all)
                     .blur(radius: 4)
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                
+
                     .scaleEffect(shouldShowBackground ? 1.2 : 1.4)
                     .animation(.spring(), value: shouldShowBackground)
-                
+
                 VStack {
                     Spacer()
                     header
@@ -109,7 +109,7 @@ struct ContentView: View {
                 .opacity(showingUpdatePopup ? 0 : 1)
                 .animation(.spring(), value: updateAvailable)
                 .animation(.spring(), value: shouldShowBackground)
-                
+
                 Color.black
                     .ignoresSafeArea()
                     .opacity(shouldShowBackground ? 0.6 : 0)
@@ -129,7 +129,7 @@ struct ContentView: View {
                             .opacity(option.id == optionPresentedID ? 1 : 0)
                             .animation(.spring().speed(1.5), value: optionPresentedID != nil)
                     }
-                    
+
                     UpdateDownloadingView(shown: $showingUpdatePopup, changelog: updateChangelog ?? "No changelog available"/*"""
         Added support for iOS 15.0 - 15.1.
         Improved the app's compatibility with various iOS devices.
@@ -155,8 +155,8 @@ struct ContentView: View {
             }
         }
     }
-    
-    
+
+
     @ViewBuilder
     var header: some View {
         HStack {
@@ -165,12 +165,15 @@ struct ContentView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: 200)
-                
+
                 Text("iOS 15.0 - 15.4.1, A12 - A15")
                     .font(.subheadline)
                     .foregroundColor(.white)
                 Text("by opa334, évelyne, UI by sourceloc")
                     .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.5))
+                Text("Compile Version: " + Constants.commitShortHash() + "\nCompile Time (UTC-8): " + Constants.compileTime())
+                    .font(.footnote)
                     .foregroundColor(.white.opacity(0.5))
             }
             Spacer()
@@ -179,7 +182,7 @@ struct ContentView: View {
         .frame(maxWidth: 340, maxHeight: nil)
         .animation(.spring(), value: isJailbreaking)
     }
-    
+
     @ViewBuilder
     var menu: some View {
         VStack {
@@ -195,9 +198,9 @@ struct ContentView: View {
                     HStack {
                         Label(title: { Text(option.title) }, icon: { Image(systemName: option.imageName) })
                             .foregroundColor(Color.white)
-                        
+
                         Spacer()
-                        
+
                         if option.view != nil {
                             Image(systemName: "chevron.right")
                                 .font(.body)
@@ -211,7 +214,7 @@ struct ContentView: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(!option.showUnjailbroken && !isJailbroken())
-                
+
                 if menuOptions.last != option {
                     Divider()
                         .background(.white)
@@ -227,7 +230,7 @@ struct ContentView: View {
         .opacity(isJailbreaking ? 0 : 1)
         .animation(.spring(), value: isJailbreaking)
     }
-    
+
     @ViewBuilder
     var bottomSection: some View {
         VStack {
@@ -271,7 +274,7 @@ struct ContentView: View {
             }
             .disabled(isJailbroken() || isJailbreaking)
             .drawingGroup()
-            
+
             if jailbreakingProgress == .finished || jailbreakingProgress == .jailbreaking {
                 Spacer()
                 LogView(advancedLogsTemporarilyEnabled: $advancedLogsTemporarilyEnabled, advancedLogsByDefault: $advancedLogsByDefault)
@@ -294,7 +297,7 @@ struct ContentView: View {
         )
         .animation(.spring(), value: isJailbreaking)
     }
-    
+
     @ViewBuilder
     var endButtons: some View {
         switch jailbreakingProgress {
@@ -339,7 +342,7 @@ struct ContentView: View {
             Group {}
         }
     }
-    
+
     @ViewBuilder
     var updateButton: some View {
         Button {
@@ -362,7 +365,7 @@ struct ContentView: View {
         .opacity(updateAvailable && jailbreakingProgress == .idle ? 1 : 0)
         .animation(.spring(), value: updateAvailable)
     }
-    
+
     func uiJailbreak() {
         jailbreakingProgress = .jailbreaking
         UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "totalJailbreaks") + 1, forKey: "totalJailbreaks")
@@ -373,19 +376,19 @@ struct ContentView: View {
             }
         }
     }
-    
+
     func checkForUpdates() async throws {
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-           
+
             let owner = "opa334"
             let repo = "Fugu15"
-            
+
             // Get the releases
             let releasesURL = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/releases")!
             let releasesRequest = URLRequest(url: releasesURL)
             let (releasesData, _) = try await URLSession.shared.data(for: releasesRequest)
             let releasesJSON = try JSONSerialization.jsonObject(with: releasesData, options: []) as! [[String: Any]]
-            
+
             if let latestTag = releasesJSON.first?["tag_name"] as? String, latestTag != version {
                 updateAvailable = true
                 updateChangelog = releasesJSON.first?["body"] as? String
