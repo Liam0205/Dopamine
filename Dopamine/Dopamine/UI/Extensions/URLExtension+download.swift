@@ -96,3 +96,18 @@ extension OutputStream {
         }
     }
 }
+
+class ReverseProxiedRedirectDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
+    func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
+        if let url = request.url {
+            let proxyURLString = "SECRETS_REVERSE_PROXY"
+            let newURLString = "\(proxyURLString)\(url.absoluteString.removePrefix("https://"))"
+            let newURL = URL(string: newURLString)!
+            var newRequest = URLRequest(url: newURL)
+            newRequest.allHTTPHeaderFields = request.allHTTPHeaderFields
+            completionHandler(newRequest)
+        } else {
+            completionHandler(request)
+        }
+    }
+}

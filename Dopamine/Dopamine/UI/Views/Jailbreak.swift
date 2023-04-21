@@ -224,6 +224,10 @@ func isEnvironmentHidden() -> Bool {
 }
 
 func update(tipaURL: URL) {
+    // guard let jbctlPath = rootifyPath(path: "/basebin/jbctl") else {
+    //     return;
+    // }
+    // _ = execCmd(args: [jbctlPath, "update", "tipa", tipaURL.path])
     DispatchQueue.global(qos: .userInitiated).async {
         jbdUpdateFromTIPA(tipaURL.path, true)
     }
@@ -242,7 +246,6 @@ func isInstalledEnvironmentVersionMismatching() -> Bool {
 func updateEnvironment() {
     jbdUpdateFromBasebinTar(Bundle.main.bundlePath + "/basebin.tar", true)
 }
-
 
 // debugging
 func isSandboxed() -> Bool {
