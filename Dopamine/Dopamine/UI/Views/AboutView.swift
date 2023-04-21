@@ -124,7 +124,7 @@ struct AboutView: View {
                 .fixedSize()
                 .font(.footnote)
                 .opacity(0.6)
-            Text("Compile Version: \(Constants.commitShortHash())\nCompile Time (UTC-8): \(Constants.compileTime())")
+            Text("Compile Version: \(Constants.commitShortHash())\n\(Constants.bundleID())")
                 .fixedSize()
                 .font(.footnote)
                 .opacity(0.6)
