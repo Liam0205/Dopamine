@@ -1,0 +1,115 @@
+"Bootstrapping" = "جارِ التمهيد";
+
+"Button_Cancel" = "إلغاء";
+
+"Button_Hide_Jailbreak" = "إخفاء الجيلبريك";
+
+"Button_Hide_Logs_Title" = "إخفاء السجل";
+
+"Button_Jailbreak_Title" = "جيلبريك";
+
+"Button_Remove_Jailbreak" = "إزالة الجيلبريك";
+
+"Button_Set_Root_Password" = "تعيين كلمة مرور الجذر";
+
+"Button_Show_Logs_Title" = "إظهار السجل";
+
+"Button_Unhide_Jailbreak" = "عدم إخفاء الجيلبريك";
+
+"Button_Update" = "تحديث";
+
+"Button_Update_Available" = "يتوفر تحديث";
+
+"Bypassing PAC" = "تجاوز PAC";
+
+"Bypassing PPL" = "تجاوز PPL";
+
+"Changelog_Unavailable_Text" = "سجل التغييرات غير متاح";
+
+"Context_Menu_Copy_To_Clipboard" = "نسخ إلى الحافظة";
+
+"Credits_Button_License" = "الترخيص";
+
+"Credits_Button_Source_Code" = "شفرة المصدر";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "إصدار Dopamine هو %@\n%@";
+
+"Credits_Header_Special_Thanks" = "شكر خاص:";
+
+"Credits_Made_By" = "صنع بواسطة opa334 و évelyne";
+
+"Credits_Made_By_Subheadline" = "واجهة المستخدم بواسطة sourcelocation\nالشعار والأيقونة بواسطة xerus";
+
+"Finalizing Bootstrap" = "جارِ إنهاء التمهيد";
+
+"Gaining r/w" = "الحصول على r/w";
+
+"Hint_Hide_Jailbreak" = "\"إخفاء الجيلبريك\" يقوم بإزالة الملفات المتعلقة بالجيلبريك مؤقتًا حتى تفعيل الجيلبريك القادم.";
+
+"Initializing Environment" = "جارِ تحسين البيئة";
+
+"Initializing System Hook" = "تحسين تكامل النظام";
+
+"Jailbreak_Done" = "تم!";
+
+"Launching kexploitd" = "جارِ استغلال الثغرة";
+
+"Launching oobPCI" = "جارِ تشغيل oopPCI";
+
+"Loading Basebin Trustcache" = "تحميل بنية الذاكرة المؤقتة";
+
+"Menu_Credits_Title" = "الاعتمادات";
+
+"Menu_Options_Title" = "الخيارات";
+
+"Menu_Reboot_Userspace_Title" = "إعادة تشغيل Userspace";
+
+"Menu_Restart_SpringBoard_Title" = "إعادة تشغيل واجهة النظام";
+
+"Options_iDownload" = "iDownload";
+
+"Options_Tweak_Injection" = "وصول الأدوات";
+
+"Options_Verbose_Logs" = "السجلات المطولة";
+
+"Patchfinding" = "العثور على التصحيح";
+
+"Rebuilding TrustCache" = "إعادة بناء الذاكرة المؤقتة";
+
+"Refreshing Icon Cache" = "تحديث ذاكرة التخزين المؤقتة للأيقونات";
+
+"Settings_Footer_Device_Bootstrapped" = "تم تمهيد الجهاز";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "لم يتم تمهيد الجهاز";
+
+"Settings_Title" = "الإعدادات";
+
+"Starting jailbreakd" = "بدء jailbreakd";
+
+"Starting Launch Daemons" = "بدء تشغيل العمليات الخفية";
+
+"Status_Title_Jailbreaking" = "جارِ تفعيل الجيلبريك";
+
+"Status_Title_Jailbroken" = "الجيلبريك مفعل";
+
+"Status_Title_Select_Package_Managers" = "اختر مدير الحزمة";
+
+"Status_Title_Unsuccessful" = "فشل";
+
+"Success_Rate %@%% (%lld/%lld)" = "معدل النجاح: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "سجل التغييرات";
+
+"Title_Made_By" = "بواسطة opa334 و évelyne، واجهة المستخدم بواسطة sourceloc";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "يمكن التمرير في هذه الواجهة";
+
+"Update_Status_Downloading" = "جارِ تنزيل التحديث…";
+
+"Update_Status_Installing" = "جارِ تثبيت التحديث…";
+
+"Update_Status_Subtitle_Please_Wait" = "يرجى الانتظار لحين الانتهاء من تنزيل الملفات";
+
+"Update_Status_Subtitle_Restart_Soon" = "سيتم إعادة تشغيل الجهاز خلال لحظات";

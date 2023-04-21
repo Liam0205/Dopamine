@@ -7,10 +7,11 @@
 
 import UIKit
 import Fugu15KernelExploit
+import CBindings
 
 
 func respring() {
-    
+    _ = execCmd(args: ["/var/jb/usr/bin/sbreload"])
 }
 
 func userspaceReboot() {
@@ -30,29 +31,42 @@ func userspaceReboot() {
     }
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-        let _ = execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
+        _ = execCmd(args: ["/var/jb/usr/bin/launchctl", "reboot", "userspace"])
     })
 }
 
+func reboot() {
+    _ = execCmd(args: [CommandLine.arguments[0], "reboot"])
+}
+
 func isJailbroken() -> Bool {
-    return false
+    var jbdPid: pid_t = 0
+    jbdGetStatus(nil, nil, &jbdPid)
+    return jbdPid != 0
 }
 
 func isBootstrapped() -> Bool {
-    return true
+    return Bootstrapper.isBootstrapped()
 }
 
 func jailbreak(completion: @escaping (Error?) -> ()) {
-    let tweakInjection = UserDefaults.standard.bool(forKey: "tweakInjection")
-    let enableiDownload = UserDefaults.standard.bool(forKey: "enableiDownload")
-    
-    let selectedPackageManagers = UserDefaults.standard.array(forKey: "selectedPackageManagers") as? [String] ?? []
-    let shouldInstallZebra = selectedPackageManagers.contains("Zebra")
-    let shouldInstallSileo = selectedPackageManagers.contains("Sileo")
-
     do {
-        Logger.log("Launching kexploitd", isUserFriendly: true)
-        
+        var wifiFixupNeeded = false
+        if #available(iOS 15.4, *) {
+            // No Wifi fixup needed
+        }
+        else {
+            wifiFixupNeeded = wifiIsEnabled()
+        }
+
+        if wifiFixupNeeded {
+            setWifiEnabled(false)
+            Logger.log("Disabling Wi-Fi", isStatus: true)
+            sleep(1)
+        }
+
+        Logger.log("Launching kexploitd", isStatus: true)
+
         try Fugu15.launchKernelExploit(oobPCI: Bundle.main.bundleURL.appendingPathComponent("oobPCI")) { msg in
             DispatchQueue.main.async {
                 var toPrint: String
@@ -64,22 +78,35 @@ func jailbreak(completion: @escaping (Error?) -> ()) {
                     toPrint = msg
                 }
 
-                Logger.log(toPrint, isUserFriendly: !verbose)
+                Logger.log(toPrint, isStatus: !verbose)
             }
+        }
+
+        if wifiFixupNeeded {
+            setWifiEnabled(true)
+            Logger.log("Enabling Wi-Fi", isStatus: true)
         }
         
         try Fugu15.startEnvironment()
         
         DispatchQueue.main.async {
-            Logger.log("Done!", type: .success, isUserFriendly: true)
+            Logger.log(NSLocalizedString("Jailbreak_Done", comment: ""), type: .success, isStatus: true)
             completion(nil)
         }
     } catch {
         DispatchQueue.main.async {
-            Logger.log("\(error.localizedDescription)", type: .error, isUserFriendly: true)
+            Logger.log("\(error.localizedDescription)", type: .error, isStatus: true)
             completion(error)
             NSLog("Fugu15 error: \(error)")
         }
+    }
+}
+
+func removeJailbreak() {
+    dopamineDefaults().removeObject(forKey: "selectedPackageManagers")
+    _ = execCmd(args: [CommandLine.arguments[0], "uninstall_environment"])
+    if isJailbroken() {
+        reboot()
     }
 }
 
@@ -89,13 +116,17 @@ func changeRootPassword(newPassword: String) {
 
 
 func changeEnvironmentVisibility(hidden: Bool) {
-    
+    if hidden {
+        _ = execCmd(args: [CommandLine.arguments[0], "hide_environment"])
+    }
+    else {
+        _ = execCmd(args: [CommandLine.arguments[0], "unhide_environment"])
+    }
 }
 
 func isEnvironmentHidden() -> Bool {
-    return false
+    return !FileManager.default.fileExists(atPath: "/var/jb")
 }
-
 
 func update(tipaURL: URL) {
     print(tipaURL)

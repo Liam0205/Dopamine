@@ -1,0 +1,115 @@
+"Bootstrapping" = "Инициализация запуска";
+
+"Button_Cancel" = "Отмена";
+
+"Button_Hide_Jailbreak" = "Скрыть джейлбрейк";
+
+"Button_Hide_Logs_Title" = "Скрыть журналы";
+
+"Button_Jailbreak_Title" = "Джейлбрейк";
+
+"Button_Remove_Jailbreak" = "Удалить джейлбрейк";
+
+"Button_Set_Root_Password" = "Установить пароль Root";
+
+"Button_Show_Logs_Title" = "Показать журналы";
+
+"Button_Unhide_Jailbreak" = "Раскрыть джейлбрейк";
+
+"Button_Update" = "Обновить";
+
+"Button_Update_Available" = "Доступно обновление";
+
+"Bypassing PAC" = "Обход PAC";
+
+"Bypassing PPL" = "Обход PPL";
+
+"Changelog_Unavailable_Text" = "Ссписок изменений не доступен";
+
+"Context_Menu_Copy_To_Clipboard" = "Копировать в буфер обмена";
+
+"Credits_Button_License" = "Лицензия";
+
+"Credits_Button_Source_Code" = "Исходный код";
+
+"Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine версия %@\n%@";
+
+"Credits_Header_Special_Thanks" = "Особая благодарность:";
+
+"Credits_Made_By" = "Сделано opa334, évelyne";
+
+"Credits_Made_By_Subheadline" = "UI от sourcelocation\nЛоготип и иконка от xerus";
+
+"Finalizing Bootstrap" = "Завершение инициализации запуска";
+
+"Gaining r/w" = "Получение прав на чтение/запись";
+
+"Hint_Hide_Jailbreak" = "\"Скрыть джейлбрейк\" временно удаляет файлы, связанные с джейлбрейком, до следующего джейлбрейка";
+
+"Initializing Environment" = "Инициализация окружения";
+
+"Initializing System Hook" = "Инициализация системного хука";
+
+"Jailbreak_Done" = "Готово!";
+
+"Launching kexploitd" = "Запуск kexploitd";
+
+"Launching oobPCI" = "Запуск oobPCI";
+
+"Loading Basebin Trustcache" = "Загрузка Basebin Trustcache";
+
+"Menu_Credits_Title" = "Благодарности";
+
+"Menu_Options_Title" = "Настройки";
+
+"Menu_Reboot_Userspace_Title" = "Перезагрузить Userspace";
+
+"Menu_Restart_SpringBoard_Title" = "Перезапустить SpringBoard";
+
+"Options_iDownload" = "iDownload";
+
+"Options_Tweak_Injection" = "Внедрение твиков";
+
+"Options_Verbose_Logs" = "Расширенные журналы";
+
+"Patchfinding" = "Поиск патчей";
+
+"Rebuilding TrustCache" = "Обновление TrustCache";
+
+"Refreshing Icon Cache" = "Обновление кэша иконок";
+
+"Settings_Footer_Device_Bootstrapped" = "Устройство Bootstrapped";
+
+"Settings_Footer_Device_Not_Bootstrapped" = "Устройство не Bootstrapped";
+
+"Settings_Title" = "Настройки";
+
+"Starting jailbreakd" = "Запуск jailbreakd";
+
+"Starting Launch Daemons" = "Запуск Launch Daemons";
+
+"Status_Title_Jailbreaking" = "Джейлбрейк";
+
+"Status_Title_Jailbroken" = "Джейлбрейк выполнен";
+
+"Status_Title_Select_Package_Managers" = "Выберите менеджер(ы) пакетов";
+
+"Status_Title_Unsuccessful" = "Неудачно";
+
+"Success_Rate %@%% (%lld/%lld)" = "Успешность: %@%% (%lld/%lld)";
+
+"Title_Changelog" = "Изменения";
+
+"Title_Made_By" = "от opa334, évelyne, UI от sourceloc";
+
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+
+"Update_Log_Hint_Scrollable" = "Журнал может прокручиваться";
+
+"Update_Status_Downloading" = "Загрузка обновления...";
+
+"Update_Status_Installing" = "Установка обновления...";
+
+"Update_Status_Subtitle_Please_Wait" = "Пожалуйста, подождите, пока файлы будут загружены.";
+
+"Update_Status_Subtitle_Restart_Soon" = "Устройство скоро перезагрузится";

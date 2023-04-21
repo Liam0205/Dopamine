@@ -11,8 +11,6 @@ extern bool swh_is_debugged;
 void* dlopen_from(const char* path, int mode, void* addressInCaller);
 void* dlopen_audited(const char* path, int mode);
 bool dlopen_preflight(const char* path);
-int posix_spawnattr_setjetsam(posix_spawnattr_t *attr, short flags, int priority, int memlimit);
-int posix_spawnattr_setjetsam_ext(posix_spawnattr_t *attr, short flags, int priority, int memlimit_active, int memlimit_inactive);
 
 #define DYLD_INTERPOSE(_replacement,_replacee) \
    __attribute__((used)) static struct{ const void* replacement; const void* replacee; } _interpose_##_replacee \
@@ -222,7 +220,9 @@ void* dlopen_hook(const char* path, int mode)
 	if (path) {
 		jbdswProcessLibrary(path);
 	}
-	return dlopen(path, mode);
+	
+	void* callerAddress = __builtin_return_address(0);
+    return dlopen_from(path, mode, callerAddress);
 }
 
 void* dlopen_from_hook(const char* path, int mode, void* addressInCaller)
@@ -247,17 +247,6 @@ bool dlopen_preflight_hook(const char* path)
 		jbdswProcessLibrary(path);
 	}
 	return dlopen_preflight(path);
-}
-
-
-int posix_spawnattr_setjetsam_hook(posix_spawnattr_t *attr, short flags, int priority, int memlimit, void *orig)
-{
-	return posix_spawnattr_setjetsam_replacement(attr, flags, priority, memlimit, &posix_spawnattr_setjetsam);
-}
-
-int posix_spawnattr_setjetsam_ext_hook(posix_spawnattr_t *attr, short flags, int priority, int memlimit_active, int memlimit_inactive, void *orig)
-{
-	return posix_spawnattr_setjetsam_ext_replacement(attr, flags, priority, memlimit_active, memlimit_inactive, &posix_spawnattr_setjetsam_ext);
 }
 
 pid_t (*forkfix_fork)(int, bool) = NULL;
@@ -298,6 +287,10 @@ pid_t vfork_hook(void)
 
 bool shouldEnableTweaks(void)
 {
+	if (access("/var/jb/basebin/.safe_mode", F_OK) == 0) {
+		return false;
+	}
+
 	char *tweaksDisabledEnv = getenv("DISABLE_TWEAKS");
 	if (tweaksDisabledEnv) {
 		if (!strcmp(tweaksDisabledEnv, "1")) {
@@ -372,7 +365,5 @@ DYLD_INTERPOSE(dlopen_hook, dlopen)
 DYLD_INTERPOSE(dlopen_from_hook, dlopen_from)
 DYLD_INTERPOSE(dlopen_audited_hook, dlopen_audited)
 DYLD_INTERPOSE(dlopen_preflight_hook, dlopen_preflight)
-DYLD_INTERPOSE(posix_spawnattr_setjetsam_hook, posix_spawnattr_setjetsam)
-DYLD_INTERPOSE(posix_spawnattr_setjetsam_ext_hook, posix_spawnattr_setjetsam_ext)
 DYLD_INTERPOSE(fork_hook, fork)
 DYLD_INTERPOSE(vfork_hook, vfork)

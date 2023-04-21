@@ -160,7 +160,7 @@ struct LogView: View {
                         Button {
                             UIPasteboard.general.string = logger.log
                         } label: {
-                            Label("Copy", systemImage: "doc.on.doc")
+                            Label("Context_Menu_Copy_To_Clipboard", systemImage: "doc.on.doc")
                         }
                     }
                 }
@@ -186,10 +186,10 @@ struct LogView: View {
 //                """
 //            let c = texts.components(separatedBy: "\n")
 //            Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { t in
-//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isUserFriendly: Int.random(in: 1...20) == 1)
-//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isUserFriendly: Int.random(in: 1...20) == 1)
-//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isUserFriendly: Int.random(in: 1...20) == 1)
-//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isUserFriendly: Int.random(in: 1...20) == 1)
+//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isStatus: Int.random(in: 1...20) == 1)
+//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isStatus: Int.random(in: 1...20) == 1)
+//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isStatus: Int.random(in: 1...20) == 1)
+//                Logger.log(c.randomElement()!, type: [LogMessage.LogType.continuous, .error, .instant].randomElement()!, isStatus: Int.random(in: 1...20) == 1)
 //            }
         }
     }
