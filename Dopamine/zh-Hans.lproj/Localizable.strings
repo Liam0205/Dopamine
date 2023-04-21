@@ -8,7 +8,7 @@
 
 "Button_Jailbreak_Title" = "越狱";
 
-"Button_Remove_Jailbreak" = "移除越狱";
+"Button_Remove_Jailbreak" = "清除越狱";
 
 "Button_Set_Mobile_Password" = "设定 mobile 用户密码";
 
@@ -44,11 +44,15 @@
 
 "Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 版本 %@\n%@";
 
-"Credits_Header_Special_Thanks" = "特别感谢：";
+"Credits_Footer_Dopamine_Hash %@\n%@" = "编译版本：%@\n%@";
+
+"Credits_Header_Special_Thanks" = "特别感谢";
 
 "Credits_Made_By" = "作者：opa334, évelyne";
 
 "Credits_Made_By_Subheadline" = "UI：sourcelocation\nLogo 及 icon 作者：xerus";
+
+"Credits_New_Icon_Subhedline" = "新图标：Liam0205";
 
 "Finalizing Bootstrap" = "完成引导";
 
@@ -74,7 +78,7 @@
 
 "Loading Basebin Trustcache" = "加载 Basebin Trustcache";
 
-"Menu_Credits_Title" = "制作人员";
+"Menu_Credits_Title" = "关于";
 
 "Menu_Settings_Title" = "设置";
 
@@ -82,13 +86,17 @@
 
 "Menu_Reboot_Userspace_Title" = "用户空间重启";
 
-"Menu_Restart_SpringBoard_Title" = "重启SpringBoard";
+"Menu_Restart_SpringBoard_Title" = "注销";
 
-"Settings_iDownload" = "iDownload (开发商终端)";
+"Settings_iDownload" = "iDownload";
 
 "Settings_Tweak_Injection" = "插件注入";
 
 "Settings_Verbose_Logs" = "详细日志";
+
+"Options_Rebuild_Environment" = "重建环境";
+
+"Options_Enable_Path_Mapping" = "路径映射";
 
 "Patchfinding" = "Patchfinding";
 
@@ -112,17 +120,19 @@
 
 "Status_Title_Select_Package_Managers" = "选择包管理器（越狱商店）";
 
-"Status_Title_Unsuccessful" = "未成功";
+"Status_Title_Unsuccessful" = "失败";
 
 "Success_Rate %@%% (%lld/%lld)" = "成功率：%@%% (%lld/%lld)";
 
 "Title_Changelog" = "变更日志";
 
-"Title_Made_By" = "由opa334, évelyne制作\nUI设计由sourceloc完成\n基于Fugu15";
+"Title_Made_By" = "作者：opa334, évelyne；UI: sourceloc\n基于 Fugu15";
 
-"Title_Supported_iOS_Versions" = "支持iOS 15.0 - 15.4.1 | A12 - A15,M1";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "滚动查看日志";
+
+"Title_Compile_Time %@" = "编译时间：%@";
 
 "Update_Status_Downloading" = "正在下载更新…";
 
@@ -154,12 +164,36 @@
 
 "Close" = "关闭";
 
-"Title_Mismatching_Environment_Version" = "环境版本不匹配";
+"Popup_Path_Mapping_Source_Title" = "增加路径映射";
 
 "Mismatching_Environment_Version_Update_Body" = "本机的越狱环境版本 (%@) 与 App 版本 (%@) 不匹配。\n点按更新按钮将安装匹配 App 版本的越狱环境，并将随后执行一次用户空间重启。";
 
+"Reboot_Userspace_Finish" = "用户空间重启";
+
 "Options_Tweak_Injection" = "插件注入";
 
-"Reboot_Userspace_Finish" = "重启用户空间";
+"Reboot_Userspace_Finish" = "用户空间重启";
 
 "Restarting Userspace" = "正在重启用户空间";
+
+"Log_Start_Jailbreaking" = "开始越狱…";
+
+"Button_Reboot_Userspace_Finish" = "用户空间重启以完成越狱";
+
+"Button_Respring_Finish" = "注销以完成越狱";
+
+"Button_Add_Path_Mapping_Source" = "增加路径映射";
+
+"Menu_ldrestart_Title" = "软重启";
+
+"Menu_Reboot_Title" = "重启";
+
+"Popup_Title_Settings" = "设置";
+
+"Button_Remove_Path_Mapping_Source" = "解除路径映射";
+
+"Popup_Remove_Path_Mapping_Source_Title" = "解除路径映射";
+
+"Message_Remove_Path_Mapping_Source" = "输入已映射的源路径，而后点按「确定」来解除映射。注意，解除映射后你可能需要执行一次用户空间重启，以便使之在系统范围内生效。此外，由于映射的路径可能已被系统或应用程序加载使用，解除映射后可能导致系统或应用程序崩溃。此时，重启并重新越狱可恢复正常。";
+
+"Message_Path_Mapping_Source" = "输入待映射的源路径，而后点按「确定」来映射。注意，映射后你可能需要执行一次用户空间重启，以便使之在系统范围内生效。";
