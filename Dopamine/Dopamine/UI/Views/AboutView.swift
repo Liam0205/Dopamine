@@ -31,7 +31,7 @@ struct AboutView: View {
                 Text("UI by sourcelocation\n Logo by xerus")
                     .font(.footnote)
                     .opacity(0.6)
-                Text("Translation and icon by Liam0205")
+                Text("New icon by Liam0205")
                     .font(.footnote)
                     .opacity(0.4)
             }
@@ -124,7 +124,7 @@ struct AboutView: View {
                 .fixedSize()
                 .font(.footnote)
                 .opacity(0.6)
-            Text("Compile Version: " + Constants.commitShortHash() + "\nCompile Time (UTC-8): " + Constants.compileTime())
+            Text("Compile Version: \(Constants.commitShortHash())\nCompile Time (UTC-8): \(Constants.compileTime())")
                 .fixedSize()
                 .font(.footnote)
                 .opacity(0.6)
