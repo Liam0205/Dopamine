@@ -28,6 +28,12 @@
 
 "Button_Update_Environment" = "Update Environment";
 
+"Button_Reboot_Userspace_Finish" = "Reboot Userspace (Finish)";
+
+"Button_Respring_Finish" = "Restart SpringBoard (Finish)";
+
+"Button_Add_Path_Mapping_Source" = "Add Path-mapping Source";
+
 "Bypassing PAC" = "Bypassing PAC";
 
 "Bypassing PPL" = "Bypassing PPL";
@@ -44,11 +50,15 @@
 
 "Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine version %@\n%@";
 
+"Credits_Footer_Dopamine_Hash %@\n%@" = "Compile Version: %@\n%@";
+
 "Credits_Header_Special_Thanks" = "Special thanks:";
 
 "Credits_Made_By" = "Made by opa334, évelyne";
 
 "Credits_Made_By_Subheadline" = "UI by sourcelocation\nLogo and icon by xerus";
+
+"Credits_New_Icon_Subhedline" = "New icon by Liam0205";
 
 "Finalizing Bootstrap" = "Finalizing Bootstrap";
 
@@ -82,11 +92,21 @@
 
 "Menu_Restart_SpringBoard_Title" = "Restart SpringBoard";
 
+"Menu_ldrestart_Title" = "ldrestart";
+
+"Menu_Update_Environment_Title" = "Update Environment";
+
+"Menu_Reboot_Title" = "Reboot";
+
 "Settings_iDownload" = "iDownload (Developer Shell)";
 
 "Settings_Tweak_Injection" = "Tweak Injection";
 
 "Settings_Verbose_Logs" = "Verbose Logs";
+
+"Options_Rebuild_Environment" = "Rebuild Environment";
+
+"Options_Enable_Path_Mapping" = "Enable Path Mapping";
 
 "Patchfinding" = "Patchfinding";
 
@@ -121,6 +141,8 @@
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Unsupported" = "Unsupported";
+
+"Title_Compile_Time %@" = "Compile Time (UTC-8): %@";
 
 "Update_Log_Hint_Scrollable" = "Log view can be scrolled";
 
@@ -157,3 +179,23 @@
 "Title_Mismatching_Environment_Version" = "Mismatching Environment Version";
 
 "Mismatching_Environment_Version_Update_Body" = "The environment version this device was jailbroken with (%@) mismatches the currently installed app version (%@)\nPressing update will update the jailbreak environment to the one of the currently installed app, your device will userspace reboot afterwards.";
+
+"Button_Remove_Path_Mapping_Source" = "Remove Path-mapping source";
+
+"Popup_Remove_Path_Mapping_Source_Title" = "Remove Path-mapping source";
+
+"Message_Remove_Path_Mapping_Source" = "Input source path that has alreaded be mapped and tap \"Set\" to unmap. Note that, a userspace reboot might be required; and hot-unmapping might cause system crash and your device will reboot at this case.";
+
+"Message_Path_Mapping_Source" = "Input source path that you want to map, and tap \"Set\" to establish the mapping immediately. Note that a userspace reboot might be required.";
+
+"Sure_Respring" = "Are you sure you want to respring?";
+
+"Sure_Respring_Message" = "Respring will kill all applications and restart the home screen.";
+
+"Sure_Reboot_Userspace" = "Are you sure you want to reboot userspace?";
+
+"Sure_Reboot_Userspace_Message" = "Rebooting userspace will restart all processes outside the kernel, including restarting all background daemons. If there is insufficient memory or if there are conflicts with tweaks causing failure to restart some background daemons, the device will be rebooted and exit the jailbroken environment.";
+
+"Sure_Reboot" = "Are you sure you want to reboot the device?";
+
+"Sure_Reboot_Message" = "Rebooting the device will exit the jailbroken environment. You will need to reopen the Dopamine jailbreak to re-enter the jailbroken state.";
