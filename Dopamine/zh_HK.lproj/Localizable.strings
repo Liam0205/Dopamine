@@ -44,11 +44,15 @@
 
 "Credits_Footer_Dopamine_Version %@\nOS:%@" = "Dopamine 版本 %@\n%@";
 
-"Credits_Header_Special_Thanks" = "特別緻謝：";
+"Credits_Footer_Dopamine_Hash %@\n%@" = "構建版本：%@\n%@";
+
+"Credits_Header_Special_Thanks" = "特別緻謝";
 
 "Credits_Made_By" = "作者：opa334, évelyne";
 
 "Credits_Made_By_Subheadline" = "UI：sourcelocation\nLogo 及 icon 作者：xerus";
+
+"Credits_New_Icon_Subhedline" = "新圖示：Liam0205";
 
 "Finalizing Bootstrap" = "完成引導";
 
@@ -92,6 +96,10 @@
 
 "Patchfinding" = "Patchfinding";
 
+"Options_Rebuild_Environment" = "重建環境";
+
+"Options_Enable_Path_Mapping" = "路徑映射";
+
 "PM_Reinstall_Done_Text" = "選中的包管理器已重新安裝";
 
 "Rebuilding TrustCache" = "重建 TrustCache";
@@ -122,7 +130,11 @@
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
+"Unsupported" = "不被支援";
+
 "Update_Log_Hint_Scrollable" = "滑動以查看日誌";
+
+"Title_Compile_Time %@" = "構建時間：%@";
 
 "Update_Status_Downloading" = "正在下載更新…";
 
@@ -156,10 +168,48 @@
 
 "Title_Mismatching_Environment_Version" = "環境版本不匹配";
 
-"Mismatching_Environment_Version_Update_Body" = "本機的越獄環境 (%@) 與 App 版本 (%@) 不匹配。\n點按更新按鈕將安裝匹配 App 版本的越獄環境，並將隨後執行一次用戶空間重啟。";
-
 "Options_Tweak_Injection" = "插件注入";
 
 "Reboot_Userspace_Finish" = "用戶空間重啟";
 
 "Restarting Userspace" = "正在重啟用戶空間";
+
+"Mismatching_Environment_Version_Update_Body" = "本機的越獄環境 (%@) 與 App 版本 (%@) 不匹配。\n點按更新按鈕將安裝匹配 App 版本的越獄環境，並將隨後執行一次用戶空間重啟。";
+
+"Popup_Path_Mapping_Source_Title" = "增添路徑映射";
+
+"Log_Start_Jailbreaking" = "開始越獄…";
+
+"Button_Reboot_Userspace_Finish" = "用戶空間重啟以完成越獄";
+
+"Button_Respring_Finish" = "註銷以完成越獄";
+
+"Button_Add_Path_Mapping_Source" = "增添路徑映射";
+
+"Menu_ldrestart_Title" = "軟重啟";
+
+"Menu_Update_Environment_Title" = "更新環境";
+
+"Menu_Reboot_Title" = "重啟";
+
+"Popup_Title_Settings" = "設置";
+
+"Button_Remove_Path_Mapping_Source" = "解除路徑映射";
+
+"Popup_Remove_Path_Mapping_Source_Title" = "解除路徑映射";
+
+"Message_Remove_Path_Mapping_Source" = "鍵入已映射的源路徑，而後點按「確定」來解除映射。注意，接觸映射後你可能需要執行一次用戶空間重啟，以便使之在系統範圍內生效。此外，由於映射的路徑可能已被系統或應用程式載入使用，故而解除映射後可能致使系統或應用程式崩潰。此時，重啟並重新越獄即可恢復正常。";
+
+"Message_Path_Mapping_Source" = "鍵入待映射的源路徑，而後點按「確定」來映射。注意，映射後你可能需要執行一次用戶空間重啟，以便使之在系統範圍內生效。";
+
+"Sure_Respring" = "確認要註銷嗎？";
+
+"Sure_Respring_Message" = "註銷將殺死所有應用程序並重啟主畫面。";
+
+"Sure_Reboot_Userspace" = "確認要重啟用戶空間嗎？";
+
+"Sure_Reboot_Userspace_Message" = "重啟用戶空間將重啟內核外的所有進程；特別地，將重啟所有運行在後台的守護進程。在內存不夠或插件衝突導致有後台守護進程重啟失敗時，則將重啟設備並退出越獄環境。";
+
+"Sure_Reboot" = "確認要重啟設備嗎？";
+
+"Sure_Reboot_Message" = "重啟設備將退出越獄環境。你講需要重新打開 Dopamine 越獄才能再次進入越獄狀態。";
