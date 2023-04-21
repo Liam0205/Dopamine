@@ -165,6 +165,7 @@ struct ContentView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: 200)
+                    .padding(.top)
                 
                 Text("iOS 15.0 - 15.4.1, A12 - A15")
                     .font(.subheadline)
@@ -232,6 +233,7 @@ struct ContentView: View {
     var bottomSection: some View {
         VStack {
             Button {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                 if (UserDefaults.standard.array(forKey: "selectedPackageManagers") as? [String] ?? []).isEmpty {
                     jailbreakingProgress = .selectingPackageManager
                 } else {
@@ -251,7 +253,11 @@ struct ContentView: View {
                         case .selectingPackageManager:
                             Text("Select Package Manager(s)")
                         case .finished:
-                            Text("Jailbroken")
+                            if jailbreakingError == nil {
+                                Text("Jailbroken")
+                            } else {
+                                Text("Unsuccessful")
+                            }
                         }
                     }}, icon: {
                         ZStack {
@@ -260,7 +266,13 @@ struct ContentView: View {
                                 LoadingIndicator(animation: .doubleHelix, color: .white, size: .small)
                             case .selectingPackageManager:
                                 Image(systemName: "shippingbox")
-                            default:
+                            case .finished:
+                                if jailbreakingError == nil {
+                                    Image(systemName: "lock.open")
+                                } else {
+                                    Image(systemName: "lock.slash")
+                                }
+                            case .idle:
                                 Image(systemName: "lock.open")
                             }
                         }
@@ -318,7 +330,7 @@ struct ContentView: View {
                 Button {
                     advancedLogsTemporarilyEnabled.toggle()
                 } label: {
-                    Label(title: { Text("Show Logs") }, icon: {
+                    Label(title: { Text(advancedLogsTemporarilyEnabled ? "Hide Logs" : "Show Logs") }, icon: {
                         Image(systemName: "scroll")
                     })
                     .foregroundColor(.white)
@@ -370,6 +382,13 @@ struct ContentView: View {
             jailbreak { e in
                 jailbreakingProgress = .finished
                 jailbreakingError = e
+                
+                if e == nil {
+                    UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "successfulJailbreaks") + 1, forKey: "successfulJailbreaks")
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                } else {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }
