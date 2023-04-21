@@ -1,0 +1,69 @@
+name: build_Release
+
+on:
+  push:
+    paths-ignore:
+      - 'release/**'
+  pull_request:
+    paths-ignore:
+      - 'release/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Bootstrap Procursus
+        uses: w2599/procursus-action@main
+        with:
+          packages: ldid trustcache
+          cache: true
+          cache-path: ~/__cache
+        env:
+          DEBIAN_FRONTEND: noninteractive
+
+      - name: Set env
+        run: |
+         orig_branch=$(git branch | grep '*' | sed  -e "s/* //g")
+         echo "orig_branch=${orig_branch}" >> $GITHUB_ENV
+         T1=$(TZ=UTC-8 date +'%Y-%m-%d %H:%M')
+         T2=$(TZ=UTC-8 date +'%S')
+         t_name=$(date -j -f "%Y-%m-%d %H:%M:%S" "${T1}:${T2}" +%s)
+         echo "t_name=${t_name}" >> $GITHUB_ENV
+         T3=$(TZ=UTC-8 date +'%Y.%m.%d/%H.%M')
+         echo "SH=${T3}.${T2}" >> $GITHUB_ENV
+          echo "ctime=${T8}" >> $GITHUB_ENV
+      - name: Log env
+        run: |
+         echo ${{ env.orig_branch }}
+         echo ${{ env.t_name }}
+         echo ${{ env.SH }}
+         echo ${{ env.ctime }}
+      - name: Build tipa
+        run: |
+         sed -i '' "s/COMPILE_TIME=\`TZ=UTC-8 date \\\\\"+%Y-%m-%d_%H%M%S\\\\\"\`/COMPILE_TIME=${{ env.ctime }}/g" ./Dopamine/Makefile
+          sudo security import Exploits/fastPath/arm.pfx -k /Library/Keychains/System.keychain -P password -A
+          make
+          cp Dopamine/Dopamine.tipa EnixDopamine.tipa
+          mv Dopamine/Dopamine.tipa EnixDopamine${{ env.t_name }}.tipa
+       #   mv Dopamine/Payload/Dopamine.app/basebin.tar basebin.tar
+      
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.SH }}
+          body: ${{ env.orig_branch }}.${{ env.t_name }}
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          files: |
+           *.tipa
+     #      basebin.tar
