@@ -104,7 +104,7 @@ NSString *trollStoreRootHelperPath(void)
 
 int basebinUpdateFromTar(NSString *basebinPath, bool rebootWhenDone)
 {
-	LSApplicationProxy *appProxy = [LSApplicationProxy applicationProxyForIdentifier:@"com.opa334.Dopamine"];
+	LSApplicationProxy *appProxy = [LSApplicationProxy applicationProxyForIdentifier:__BUNDLE_ID];
 	if (appProxy) {
 		NSString *executablePath = [appProxy.bundleURL.path stringByAppendingPathComponent:appProxy.bundleExecutable];
 		if (executablePath) {
