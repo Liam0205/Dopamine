@@ -40,12 +40,16 @@ func reboot() {
 }
 
 func isJailbroken() -> Bool {
+    //if isSandboxed() { return true } // ui debugging
+    
     var jbdPid: pid_t = 0
     jbdGetStatus(nil, nil, &jbdPid)
     return jbdPid != 0
 }
 
 func isBootstrapped() -> Bool {
+    //if isSandboxed() { return true } // ui debugging
+    
     return Bootstrapper.isBootstrapped()
 }
 
@@ -110,6 +114,10 @@ func removeJailbreak() {
     }
 }
 
+func jailbrokenUpdateTweakInjectionPreference() {
+    _ = execCmd(args: [CommandLine.arguments[0], "update_tweak_injection"])
+}
+
 func changeRootPassword(newPassword: String) {
     
 }
@@ -130,4 +138,10 @@ func isEnvironmentHidden() -> Bool {
 
 func update(tipaURL: URL) {
     print(tipaURL)
+}
+
+
+// debugging
+func isSandboxed() -> Bool {
+    !FileManager.default.isWritableFile(atPath: "/var")
 }
