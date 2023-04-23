@@ -123,15 +123,24 @@ func isBootstrapped() -> Bool {
 
 func jailbreak(completion: @escaping (Error?) -> ()) {
     do {
+        var wifiFixupNeeded = false
+        var sleepNeeded = false
         if #available(iOS 15.4, *) {
             // No Wifi fixup needed
         }
         else {
-            if wifiIsEnabled() {
-                setWifiEnabled(false)
-                Logger.log("Disabling Wi-Fi", isStatus: true)
-                sleep(1)
-            }
+            wifiFixupNeeded = wifiIsEnabled()
+            sleepNeeded = true
+        }
+
+        if wifiFixupNeeded {
+            setWifiEnabled(false)
+            Logger.log("Disabling Wi-Fi", isStatus: true)
+        }
+
+        if sleepNeeded {
+            Logger.log("Log_Start_Jailbreaking", isStatus: true)
+            sleep(5)
         }
 
         Logger.log("Launching kexploitd", isStatus: true)
@@ -222,7 +231,7 @@ func update(tipaURL: URL) {
 
 func installedEnvironmentVersion() -> String {
     if isSandboxed() { return "0.9" } // ui debugging
-    
+
     return getBootInfoValue(key: "basebin-version") as? String ?? "1.0"
 }
 
