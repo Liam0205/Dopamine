@@ -17,8 +17,8 @@ struct SettingsView: View {
     @AppStorage("tweakInjectionEnabled", store: dopamineDefaults()) var tweakInjection: Bool = true
     @AppStorage("iDownloadEnabled", store: dopamineDefaults()) var enableiDownload: Bool = false
     
-    @State var rootPasswordChangeAlertShown = false
-    @State var rootPasswordInput = "alpine"
+    @State var mobilePasswordChangeAlertShown = false
+    @State var mobilePasswordInput = "alpine"
     
     @State var removeJailbreakAlertShown = false
     @State var tweakInjectionToggledAlertShown = false
@@ -31,7 +31,7 @@ struct SettingsView: View {
     
     var body: some View {
         VStack {
-            Text("Settings_Title")
+            Text("Menu_Settings_Title")
             Divider()
                 .background(.white)
                 .padding(.horizontal, 32)
@@ -39,7 +39,7 @@ struct SettingsView: View {
             
             VStack(spacing: 20) {
                 VStack(spacing: 10) {
-                    Toggle("Options_Tweak_Injection", isOn: $tweakInjection)
+                    Toggle("Settings_Tweak_Injection", isOn: $tweakInjection)
                         .onChange(of: tweakInjection) { newValue in
                             if isJailbroken() {
                                 jailbrokenUpdateTweakInjectionPreference()
@@ -47,8 +47,8 @@ struct SettingsView: View {
                             }
                         }
                     if !isJailbroken() {
-                        Toggle("Options_iDownload", isOn: $enableiDownload)
-                        Toggle("Options_Verbose_Logs", isOn: $verboseLogs)
+                        Toggle("Settings_iDownload", isOn: $enableiDownload)
+                        Toggle("Settings_Verbose_Logs", isOn: $verboseLogs)
                     }
                 }
                 if isBootstrapped() {
@@ -56,11 +56,11 @@ struct SettingsView: View {
                         if isJailbroken() {
                             Button(action: {
                                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                rootPasswordChangeAlertShown = true
+                                mobilePasswordChangeAlertShown = true
                             }) {
                                 HStack {
                                     Image(systemName: "key")
-                                    Text("Button_Set_Root_Password")
+                                    Text("Button_Set_Mobile_Password")
                                         .lineLimit(1)
                                 }
                                 .padding(8)
@@ -134,8 +134,8 @@ struct SettingsView: View {
             
             
             ZStack {}
-                .textFieldAlert(isPresented: $rootPasswordChangeAlertShown) { () -> TextFieldAlert in
-                    TextFieldAlert(title: NSLocalizedString("Popup_Change_Root_Password_Title", comment: ""), message: "", text: Binding<String?>($rootPasswordInput))
+                .textFieldAlert(isPresented: $mobilePasswordChangeAlertShown) { () -> TextFieldAlert in
+                    TextFieldAlert(title: NSLocalizedString("Popup_Change_Mobile_Password_Title", comment: ""), message: NSLocalizedString("Popup_Change_Mobile_Password_Message", comment: ""), text: Binding<String?>($mobilePasswordInput))
                 }
                 .alert("Settings_Remove_Jailbreak_Alert_Title", isPresented: $removeJailbreakAlertShown, actions: {
                     Button("Button_Cancel", role: .cancel) { }
@@ -166,7 +166,7 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        JailbreakView()
     }
 }
 

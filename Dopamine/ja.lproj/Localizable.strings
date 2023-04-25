@@ -10,7 +10,11 @@
 
 "Button_Remove_Jailbreak" = "Jailbreak環境を削除";
 
-"Button_Set_Root_Password" = "Rootのパスワードを設定";
+"Button_Set_Mobile_Password" = "Mobileのパスワードを設定";
+
+"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+
+"Button_Set" = "Set";
 
 "Button_Show_Logs_Title" = "ログを表示";
 
@@ -60,17 +64,15 @@
 
 "Menu_Credits_Title" = "クレジット";
 
-"Menu_Options_Title" = "オプション";
-
 "Menu_Reboot_Userspace_Title" = "Userspaceを再起動";
 
 "Menu_Restart_SpringBoard_Title" = "SpringBoardを再起動";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "Tweak Injection";
+"Settings_Tweak_Injection" = "Tweak Injection";
 
-"Options_Verbose_Logs" = "詳細なログ";
+"Settings_Verbose_Logs" = "詳細なログ";
 
 "Patchfinding" = "Patchfinderを実行中";
 
@@ -82,7 +84,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "bootstrapはインストールされていません";
 
-"Settings_Title" = "設定";
+"Menu_Settings_Title" = "設定";
 
 "Starting jailbreakd" = "jailbreakdを開始中";
 
@@ -100,9 +102,9 @@
 
 "Title_Changelog" = "更新履歴";
 
-"Title_Made_By" = "by opa334, évelyne, UI by sourceloc";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "ログビューはスクロール可能です";
 
@@ -114,3 +116,14 @@
 
 "Update_Status_Subtitle_Restart_Soon" = "デバイスはすぐに再起動します";
 
+"Alert_Button_Uninstall" = "Uninstall";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+
+"Popup_Change_Mobile_Password_Title" = "Change Mobile Password";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";

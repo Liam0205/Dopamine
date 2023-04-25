@@ -10,6 +10,10 @@
 
 "Button_Remove_Jailbreak" = "إزالة الجيلبريك";
 
+"Popup_Change_Mobile_Password_Message" = "Set the mobile password of your device, this can also be used for root access using sudo. If you want to set the root password, you can do so from a mobile shell using \"sudo passwd root\"";
+
+"Button_Set" = "Set";
+
 "Button_Set_Root_Password" = "تعيين كلمة مرور الجذر";
 
 "Button_Show_Logs_Title" = "إظهار السجل";
@@ -60,17 +64,15 @@
 
 "Menu_Credits_Title" = "الاعتمادات";
 
-"Menu_Options_Title" = "الخيارات";
-
 "Menu_Reboot_Userspace_Title" = "إعادة تشغيل Userspace";
 
 "Menu_Restart_SpringBoard_Title" = "إعادة تشغيل واجهة النظام";
 
-"Options_iDownload" = "iDownload";
+"Settings_iDownload" = "iDownload";
 
-"Options_Tweak_Injection" = "وصول الأدوات";
+"Settings_Tweak_Injection" = "وصول الأدوات";
 
-"Options_Verbose_Logs" = "السجلات المطولة";
+"Settings_Verbose_Logs" = "السجلات المطولة";
 
 "Patchfinding" = "العثور على التصحيح";
 
@@ -82,7 +84,7 @@
 
 "Settings_Footer_Device_Not_Bootstrapped" = "لم يتم تمهيد الجهاز";
 
-"Settings_Title" = "الإعدادات";
+"Menu_Settings_Title" = "الإعدادات";
 
 "Starting jailbreakd" = "بدء jailbreakd";
 
@@ -100,9 +102,9 @@
 
 "Title_Changelog" = "سجل التغييرات";
 
-"Title_Made_By" = "بواسطة opa334 و évelyne، واجهة المستخدم بواسطة sourceloc";
+"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
 
-"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1, A12 - A15";
+"Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
 "Update_Log_Hint_Scrollable" = "يمكن التمرير في هذه الواجهة";
 
@@ -113,3 +115,15 @@
 "Update_Status_Subtitle_Please_Wait" = "يرجى الانتظار لحين الانتهاء من تنزيل الملفات";
 
 "Update_Status_Subtitle_Restart_Soon" = "سيتم إعادة تشغيل الجهاز خلال لحظات";
+
+"Alert_Button_Uninstall" = "Uninstall";
+
+"Alert_Tweak_Injection_Toggled_Body" = "For changes to apply you need to reboot Userspace. Do you want to reboot now?";
+
+"Popup_Change_Root_Password_Title" = "Change Mobile Password";
+
+"Settings_Remove_Jailbreak_Alert_Body" = "Removing jailbreak will delete all jailbreak-related files, but all regular apps, files and data will be kept. Are you sure you want to continue? You can't undo this action.";
+
+"Settings_Remove_Jailbreak_Alert_Title" = "Remove Jailbreak";
+
+"Settings_Tweak_Injection_Toggled_Alert_Title" = "Userspace reboot required";

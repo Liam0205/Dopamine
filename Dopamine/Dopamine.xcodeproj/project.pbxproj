@@ -13,9 +13,12 @@
 		1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */ = {isa = PBXBuildFile; productRef = 1502A4232891BD800011CB6E /* Fugu15KernelExploit */; };
 		151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 151CAFAC2893645C00B2A6BA /* CoreServices.framework */; };
 		151CAFB32894041D00B2A6BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151CAFB22894041D00B2A6BA /* main.swift */; };
-		15372EA328DDF5EF00514A73 /* bootstrap.tar in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA028DDF5EF00514A73 /* bootstrap.tar */; };
 		15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
 		15372EA728DDFF9A00514A73 /* sileo.deb in Resources */ = {isa = PBXBuildFile; fileRef = 15372EA528DDFF9000514A73 /* sileo.deb */; };
+		8C19A9AB29F54BEA00F06D21 /* libzstd in Frameworks */ = {isa = PBXBuildFile; productRef = 8C19A9AA29F54BEA00F06D21 /* libzstd */; };
+		8C19A9AD29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst in Resources */ = {isa = PBXBuildFile; fileRef = 8C19A9AC29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst */; };
+		8C19A9CC29F5608200F06D21 /* libjbdrw.deb in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C19A9CB29F5608200F06D21 /* libjbdrw.deb */; };
+		8C19A9CD29F5659700F06D21 /* libjbdrw.deb in Resources */ = {isa = PBXBuildFile; fileRef = 8C19A9CB29F5608200F06D21 /* libjbdrw.deb */; };
 		8C2EDE1929F0AAF70060D192 /* oobPCI in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1829F0AAF70060D192 /* oobPCI */; };
 		8C2EDE1B29F0ACA60060D192 /* basebin.tar in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1A29F0ACA60060D192 /* basebin.tar */; };
 		8C2EDE1D29F0AE3A0060D192 /* basebin.tc in Resources */ = {isa = PBXBuildFile; fileRef = 8C2EDE1C29F0ACC80060D192 /* basebin.tc */; };
@@ -34,11 +37,15 @@
 		CEBBF6DB29D9DCD900AD7299 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBBF6DA29D9DCD900AD7299 /* SettingsView.swift */; };
 		CEBBF6DD29DB04FA00AD7299 /* Jailbreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBBF6DC29DB04FA00AD7299 /* Jailbreak.swift */; };
 		CEBBF6E129DB422500AD7299 /* TextField++.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBBF6E029DB422500AD7299 /* TextField++.swift */; };
-		CEC4159C29D30D3100D79EE9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4159929D30D3100D79EE9 /* ContentView.swift */; };
+		CEC4159C29D30D3100D79EE9 /* JailbreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4159929D30D3100D79EE9 /* JailbreakView.swift */; };
 		CEC4159F29D3590800D79EE9 /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4159E29D3590800D79EE9 /* MaterialView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0CA22AFB29F134440088CB7B /* constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = constants.m; path = Dopamine/constants.m; sourceTree = "<group>"; };
+		0C5D3B0829F2D5C7002924C0 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0C5D3B0929F2DA27002924C0 /* zh_HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_HK; path = zh_HK.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0C5D3B0A29F2DA3C002924C0 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1502A4082891B03F0011CB6E /* Dopamine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dopamine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1502A40B2891B03F0011CB6E /* DopamineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineApp.swift; sourceTree = "<group>"; };
 		1502A40F2891B0410011CB6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -54,10 +61,13 @@
 		151CAFA72893622C00B2A6BA /* LSBundleProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSBundleProxy.h; sourceTree = "<group>"; };
 		151CAFAC2893645C00B2A6BA /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		151CAFB22894041D00B2A6BA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		15372EA028DDF5EF00514A73 /* bootstrap.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = bootstrap.tar; sourceTree = "<group>"; };
 		15372EA528DDFF9000514A73 /* sileo.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = sileo.deb; sourceTree = "<group>"; };
 		21AFE72F29F32AF8008B4B4C /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		21AFE73029F33538008B4B4C /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8C19A9AC29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bootstrap-iphoneos-arm64.tar.zst"; sourceTree = "<group>"; };
+		8C19A9CB29F5608200F06D21 /* libjbdrw.deb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjbdrw.deb; sourceTree = "<group>"; };
+		21C376B329F43EA0001ECD18 /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		21BFE80B29F4447E00F0ABCD /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8C2EDE1829F0AAF70060D192 /* oobPCI */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = oobPCI; path = ../../Exploits/oobPCI/oobPCI; sourceTree = "<group>"; };
 		8C2EDE1A29F0ACA60060D192 /* basebin.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = basebin.tar; sourceTree = "<group>"; };
 		8C2EDE1C29F0ACC80060D192 /* basebin.tc */ = {isa = PBXFileReference; lastKnownFileType = file; name = basebin.tc; path = ../../../BaseBin/basebin.tc; sourceTree = "<group>"; };
@@ -78,7 +88,6 @@
 		938DADE829F2CB1500C37952 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/Localizable.strings; sourceTree = "<group>"; };
 		938DADE929F2CE2200C37952 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		938DADEA29F2CE3800C37952 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
-		938DADEB29F2DAEA00C37952 /* sl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sl; path = sl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		938DADEC29F2DBE100C37952 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		938DADEE29F2E0FA00C37952 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		938DADEF29F2FCE400C37952 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -90,7 +99,7 @@
 		CEBBF6DA29D9DCD900AD7299 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CEBBF6DC29DB04FA00AD7299 /* Jailbreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Jailbreak.swift; sourceTree = "<group>"; };
 		CEBBF6E029DB422500AD7299 /* TextField++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TextField++.swift"; sourceTree = "<group>"; };
-		CEC4159929D30D3100D79EE9 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CEC4159929D30D3100D79EE9 /* JailbreakView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JailbreakView.swift; sourceTree = "<group>"; };
 		CEC4159E29D3590800D79EE9 /* MaterialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -102,6 +111,8 @@
 				1502A4242891BD800011CB6E /* Fugu15KernelExploit in Frameworks */,
 				15372EA628DDFF9000514A73 /* sileo.deb in Frameworks */,
 				8C8D955E29D04C4D00A482A8 /* zebra.deb in Frameworks */,
+				8C19A9CC29F5608200F06D21 /* libjbdrw.deb in Frameworks */,
+				8C19A9AB29F54BEA00F06D21 /* libzstd in Frameworks */,
 				151CAFAD2893645C00B2A6BA /* CoreServices.framework in Frameworks */,
 				CE27798929D459220030E28D /* SwiftfulLoadingIndicators in Frameworks */,
 			);
@@ -181,7 +192,8 @@
 			children = (
 				15372EA528DDFF9000514A73 /* sileo.deb */,
 				8C8D955D29D04C4D00A482A8 /* zebra.deb */,
-				15372EA028DDF5EF00514A73 /* bootstrap.tar */,
+				8C19A9CB29F5608200F06D21 /* libjbdrw.deb */,
+				8C19A9AC29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst */,
 				8C2EDE1A29F0ACA60060D192 /* basebin.tar */,
 				8C2EDE1C29F0ACC80060D192 /* basebin.tc */,
 				8C8D955A29D04B4C00A482A8 /* tar */,
@@ -221,7 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				CE6CA69229D6D7C100A6E513 /* AboutView.swift */,
-				CEC4159929D30D3100D79EE9 /* ContentView.swift */,
+				CEC4159929D30D3100D79EE9 /* JailbreakView.swift */,
 				CEC4159E29D3590800D79EE9 /* MaterialView.swift */,
 				CE284DE629D478620096D99D /* LogView.swift */,
 				CEBBF6DA29D9DCD900AD7299 /* SettingsView.swift */,
@@ -251,6 +263,7 @@
 			packageProductDependencies = (
 				1502A4232891BD800011CB6E /* Fugu15KernelExploit */,
 				CE27798829D459220030E28D /* SwiftfulLoadingIndicators */,
+				8C19A9AA29F54BEA00F06D21 /* libzstd */,
 			);
 			productName = Fugu15;
 			productReference = 1502A4082891B03F0011CB6E /* Dopamine.app */;
@@ -290,16 +303,21 @@
 				ur,
 				fr,
 				vi,
-				sl,
 				"zh-Hans",
 				"pt-BR",
 				nl,
 				uk,
 				sv,
+				zh_CN,
+				zh_HK,
+				zh_TW,
+				kk,
+				el,
 			);
 			mainGroup = 1502A3FF2891B03F0011CB6E;
 			packageReferences = (
 				CE27798729D459220030E28D /* XCRemoteSwiftPackageReference "SwiftfulLoadingIndicators" */,
+				8C19A9A929F54BEA00F06D21 /* XCRemoteSwiftPackageReference "zstd" */,
 			);
 			productRefGroup = 1502A4092891B03F0011CB6E /* Products */;
 			projectDirPath = "";
@@ -315,15 +333,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C19A9CD29F5659700F06D21 /* libjbdrw.deb in Resources */,
 				8C8D955F29D04CD100A482A8 /* zebra.deb in Resources */,
 				938DADDE29F2993400C37952 /* Localizable.strings in Resources */,
+				8C19A9AD29F54DED00F06D21 /* bootstrap-iphoneos-arm64.tar.zst in Resources */,
 				8C8D955B29D04B4C00A482A8 /* tar in Resources */,
 				8C2EDE1929F0AAF70060D192 /* oobPCI in Resources */,
 				15372EA728DDFF9A00514A73 /* sileo.deb in Resources */,
 				8C2EDE1B29F0ACA60060D192 /* basebin.tar in Resources */,
 				8C2EDE1D29F0AE3A0060D192 /* basebin.tc in Resources */,
 				1502A4132891B0410011CB6E /* Preview Assets.xcassets in Resources */,
-				15372EA328DDF5EF00514A73 /* bootstrap.tar in Resources */,
 				1502A4102891B0410011CB6E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -336,7 +355,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9380C00129EAE9C600C0121A /* PackageManagerSelectionView.swift in Sources */,
-				CEC4159C29D30D3100D79EE9 /* ContentView.swift in Sources */,
+				CEC4159C29D30D3100D79EE9 /* JailbreakView.swift in Sources */,
 				CEBBF6DD29DB04FA00AD7299 /* Jailbreak.swift in Sources */,
 				151CAFB32894041D00B2A6BA /* main.swift in Sources */,
 				CEC4159F29D3590800D79EE9 /* MaterialView.swift in Sources */,
@@ -370,12 +389,16 @@
 				938DADE829F2CB1500C37952 /* ur */,
 				938DADE929F2CE2200C37952 /* fr */,
 				938DADEA29F2CE3800C37952 /* vi */,
-				938DADEB29F2DAEA00C37952 /* sl */,
 				938DADEC29F2DBE100C37952 /* zh-Hans */,
 				938DADEE29F2E0FA00C37952 /* pt-BR */,
 				938DADEF29F2FCE400C37952 /* nl */,
 				21AFE72F29F32AF8008B4B4C /* uk */,
 				21AFE73029F33538008B4B4C /* sv */,
+				0C5D3B0829F2D5C7002924C0 /* zh_CN */,
+				0C5D3B0929F2DA27002924C0 /* zh_HK */,
+				0C5D3B0A29F2DA3C002924C0 /* zh_TW */,
+				21C376B329F43EA0001ECD18 /* kk */,
+				21BFE80B29F4447E00F0ABCD /* el */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -610,6 +633,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8C19A9A929F54BEA00F06D21 /* XCRemoteSwiftPackageReference "zstd" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/facebook/zstd.git";
+			requirement = {
+				branch = dev;
+				kind = branch;
+			};
+		};
 		CE27798729D459220030E28D /* XCRemoteSwiftPackageReference "SwiftfulLoadingIndicators" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulLoadingIndicators";
@@ -624,6 +655,11 @@
 		1502A4232891BD800011CB6E /* Fugu15KernelExploit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Fugu15KernelExploit;
+		};
+		8C19A9AA29F54BEA00F06D21 /* libzstd */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8C19A9A929F54BEA00F06D21 /* XCRemoteSwiftPackageReference "zstd" */;
+			productName = libzstd;
 		};
 		CE27798829D459220030E28D /* SwiftfulLoadingIndicators */ = {
 			isa = XCSwiftPackageProductDependency;
