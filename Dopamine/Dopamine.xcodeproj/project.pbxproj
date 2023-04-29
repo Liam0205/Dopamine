@@ -590,7 +590,7 @@
 					"-framework",
 					IOKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.Dopamine;
+				PRODUCT_BUNDLE_IDENTIFIER = page.liam.Dopamine;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Dopamine/Dopamine-Bridging-Header.h";
@@ -634,7 +634,7 @@
 					"-framework",
 					IOKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.opa334.Dopamine;
+				PRODUCT_BUNDLE_IDENTIFIER = page.liam.Dopamine;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Dopamine/Dopamine-Bridging-Header.h";
