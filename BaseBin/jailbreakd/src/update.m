@@ -9,6 +9,11 @@
 #include <libarchive/archive.h>
 #include <libarchive/archive_entry.h>
 
+#define UPDATE_STRINGIZE(x) #x
+#define UPDATE_STRINGIZE2(x) UPDATE_STRINGIZE(x)
+#define _BUNDLE_ID BUNDLE_ID
+#define __BUNDLE_ID @UPDATE_STRINGIZE2(_BUNDLE_ID)
+
 static int
 copy_data(struct archive *ar, struct archive *aw)
 {
@@ -61,12 +66,12 @@ int extract(NSString* fileToExtract, NSString* extractionPath)
 					fprintf(stderr, "%s\n", archive_error_string(a));
 			if (r < ARCHIVE_WARN)
 					return 1;
-			
+
 			NSString* currentFile = [NSString stringWithUTF8String:archive_entry_pathname(entry)];
 			NSString* fullOutputPath = [extractionPath stringByAppendingPathComponent:currentFile];
 			//printf("extracting %@ to %@\n", currentFile, fullOutputPath);
 			archive_entry_set_pathname(entry, fullOutputPath.fileSystemRepresentation);
-			
+
 			r = archive_write_header(ext, entry);
 			if (r < ARCHIVE_OK)
 					fprintf(stderr, "%s\n", archive_error_string(ext));
@@ -87,7 +92,7 @@ int extract(NSString* fileToExtract, NSString* extractionPath)
 	archive_read_free(a);
 	archive_write_close(ext);
 	archive_write_free(ext);
-	
+
 	return 0;
 }
 
@@ -191,7 +196,7 @@ int jbUpdateFromTIPA(NSString *tipaPath, bool rebootWhenDone)
 	int installRet = spawn(tsRootHelperPath, @[@"install", tipaPath]);
 	if (installRet != 0) return 2;
 
-	LSApplicationProxy *appProxy = [LSApplicationProxy applicationProxyForIdentifier:@"com.opa334.Dopamine"];
+	LSApplicationProxy *appProxy = [LSApplicationProxy applicationProxyForIdentifier:__BUNDLE_ID];
 	int bbRet = basebinUpdateFromTar([appProxy.bundleURL.path stringByAppendingPathComponent:@"basebin.tar"], rebootWhenDone);
 	if (bbRet != 0) return 2 + bbRet;
 	return 0;
