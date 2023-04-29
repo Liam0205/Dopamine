@@ -133,7 +133,7 @@ struct AboutView: View {
             Group {
                 if !easterEgg {
                     Text("Credits_Footer_Dopamine_Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")\nOS:\(ProcessInfo.processInfo.operatingSystemVersionString)")
-                    Text("Compile Version: " + Constants.commitShortHash() + "\nCompile Time (UTC-8): " + Constants.compileTime())
+                    Text("Credits_Footer_Dopamine_Hash \(Constants.commitShortHash())\n\(Constants.bundleID())")
                         .fixedSize()
                         .font(.footnote)
                         .opacity(0.6)
