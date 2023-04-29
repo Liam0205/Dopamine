@@ -9,38 +9,43 @@ import SwiftUI
 import Fugu15KernelExploit
 
 struct SettingsView: View {
-    
+
     @AppStorage("totalJailbreaks", store: dopamineDefaults()) var totalJailbreaks: Int = 0
     @AppStorage("successfulJailbreaks", store: dopamineDefaults()) var successfulJailbreaks: Int = 0
-    
+
     @AppStorage("verboseLogsEnabled", store: dopamineDefaults()) var verboseLogs: Bool = false
     @AppStorage("tweakInjectionEnabled", store: dopamineDefaults()) var tweakInjection: Bool = true
     @AppStorage("iDownloadEnabled", store: dopamineDefaults()) var enableiDownload: Bool = false
-    
+
     @Binding var isPresented: Bool
-    
+
+    @AppStorage("rebuildEnvironment", store: dopamineDefaults()) var rebuildEnvironment: Bool = false
+
     @State var mobilePasswordChangeAlertShown = false
     @State var mobilePasswordInput = "alpine"
-    
+
     @State var removeJailbreakAlertShown = false
     @State var isSelectingPackageManagers = false
     @State var tweakInjectionToggledAlertShown = false
-    
+
     @State var isEnvironmentHiddenState = isEnvironmentHidden()
-    
+
     @State var easterEgg = false
-    
+
     init(isPresented: Binding<Bool>?) {
         UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .init(named: "AccentColor")
         self._isPresented = isPresented ?? .constant(true)
     }
-    
+
     var body: some View {
         VStack {
             if !isSelectingPackageManagers {
                 VStack {
                     VStack(spacing: 20) {
                         VStack(spacing: 10) {
+                            if !isJailbroken() {
+                                Toggle("Rebuild Environment", isOn: $rebuildEnvironment)
+                            }
                             Toggle("Settings_Tweak_Injection", isOn: $tweakInjection)
                                 .onChange(of: tweakInjection) { newValue in
                                     if isJailbroken() {
@@ -75,8 +80,8 @@ struct SettingsView: View {
                                         )
                                     }
                                     .padding(.bottom)
-                                    
-                                    
+
+
                                     Button(action: {
                                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                         isSelectingPackageManagers = true
@@ -150,7 +155,7 @@ struct SettingsView: View {
                     .tint(.accentColor)
                     .padding(.vertical, 16)
                     .padding(.horizontal, 32)
-                    
+
                     Divider()
                         .background(.white)
                         .padding(.horizontal, 32)
@@ -164,14 +169,14 @@ struct SettingsView: View {
                             .opacity(0.6)
                     }
                     .padding(.top, 2)
-                    
+
                     if easterEgg {
                         Image("fr")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxHeight: .infinity)
                     }
-                    
+
                     ZStack {}
                         .textFieldAlert(isPresented: $mobilePasswordChangeAlertShown) { () -> TextFieldAlert in
                             TextFieldAlert(title: NSLocalizedString("Popup_Change_Mobile_Password_Title", comment: ""), message: NSLocalizedString("Popup_Change_Mobile_Password_Message", comment: ""), text: Binding<String?>($mobilePasswordInput), onSubmit: {
@@ -191,10 +196,10 @@ struct SettingsView: View {
                             }
                         }, message: { Text("Alert_Tweak_Injection_Toggled_Body") })
                         .frame(maxHeight: 0)
-                    
+
                 }
                 .foregroundColor(.white)
-                
+
             } else {
                 PackageManagerSelectionView(shown: $isSelectingPackageManagers, reinstall: true) {
                     isSelectingPackageManagers = false
@@ -211,7 +216,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     func successRate() -> String {
         if totalJailbreaks == 0 {
             return "-"
@@ -232,7 +237,7 @@ extension View {
         when shouldShow: Bool,
         alignment: Alignment = .leading,
         @ViewBuilder placeholder: () -> Content) -> some View {
-            
+
             ZStack(alignment: alignment) {
                 placeholder().opacity(shouldShow ? 1 : 0)
                 self
