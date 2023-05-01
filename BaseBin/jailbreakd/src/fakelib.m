@@ -86,7 +86,7 @@ int carbonCopy(NSString *sourcePath, NSString *targetPath)
 					}
 				}
 			}
-			
+
 		}
 		else {
 			retval = carbonCopySingle(sourcePath, targetPath);
@@ -186,4 +186,86 @@ int setFakeLibBindMountActive(bool active)
 		}
 	}
 	return ret;
+}
+
+int64_t registerJbPrefixedPath(NSString *sourcePath, int retry) {
+  NSString *jbPrefixedPath = prebootPath(sourcePath);
+
+  NSFileManager *fm = [NSFileManager defaultManager];
+
+  bool required_copy;
+  if (![fm fileExistsAtPath:jbPrefixedPath]) {
+    required_copy = true;
+  } else {
+    NSArray* list = [fm contentsOfDirectoryAtPath:jbPrefixedPath error:nil];
+    if (list != nil && list.count == 0) {
+      for (int i = 0; i != retry && ![fm removeItemAtPath:jbPrefixedPath error:nil]; ++i) {}
+      required_copy = true;
+    } else {
+      required_copy = false;
+    }
+  }
+
+  if (required_copy) {
+    // 0x0. copy items to a tmpPath
+    if (![fm fileExistsAtPath:sourcePath]) {
+      return -1;
+    }
+    NSString* tmpPath = [NSString stringWithFormat:@"%@_tmp", jbPrefixedPath];
+    for (int i = 0; i != retry &&
+      ![fm createDirectoryAtPath:tmpPath withIntermediateDirectories:YES attributes:nil error:nil]; ++i) {}
+    for (int i = 0; i != retry && ![fm removeItemAtPath:tmpPath error:nil]; ++i) {}
+    for (int i = 0; i != retry && ![fm copyItemAtPath:sourcePath toPath:tmpPath error:nil]; ++i) {}
+
+    // 0x1. mv items to the jbPrefixedPath
+    for (int i = 0; i != retry && ![fm moveItemAtPath:tmpPath toPath:jbPrefixedPath error:nil]; ++i) {}
+  }
+
+  run_unsandboxed(^{
+    mount("bindfs", sourcePath.fileSystemRepresentation, MNT_RDONLY, (void*)jbPrefixedPath.fileSystemRepresentation);
+  });
+  return 0;
+}
+
+int64_t bindMountPath(NSString *sourcePath, bool check_existances) {
+  sourcePath = [sourcePath stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+  // remove tailing `/`
+  if ([sourcePath length] > 0 && [[sourcePath substringFromIndex: [sourcePath length] - 1] isEqual:@"/"]) {
+    sourcePath = [sourcePath substringToIndex: [sourcePath length] - 1];
+  }
+
+  if (!([sourcePath length] > 0 && [sourcePath hasPrefix:@"/"] &&
+          ![sourcePath hasPrefix:@"/var/jb/"] && ![sourcePath hasPrefix:prebootPath(nil)])) {
+    return -1;
+  }
+
+  NSFileManager *fm = [NSFileManager defaultManager];
+  NSString *prefixersPlist = @"/var/jb/var/mobile/Library/Preferences/page.liam.prefixers.plist";
+  if (check_existances && [fm fileExistsAtPath:prefixersPlist]) {
+    NSDictionary *plistDict = [[NSDictionary alloc] initWithContentsOfFile:prefixersPlist];
+    NSArray *sources = [plistDict objectForKey:@"source"];
+    for (NSString* source in sources) {
+      if ([source hasPrefix:sourcePath] || [sourcePath hasPrefix:source]) {
+        return -2;
+      }
+    }
+  }
+
+  if (registerJbPrefixedPath(sourcePath, 1) == 0) {
+    if (check_existances) {
+      if ([fm fileExistsAtPath:prefixersPlist]) {
+        NSMutableDictionary *plistDict = [[NSMutableDictionary alloc] initWithContentsOfFile:prefixersPlist];
+        NSMutableArray *sources = [plistDict objectForKey:@"source"];
+        [sources addObject:sourcePath];
+        [plistDict writeToFile:prefixersPlist atomically:YES];
+      } else {
+        NSArray *sources = [[NSArray alloc] initWithObjects: sourcePath, nil];
+        NSDictionary *plistDict = [[NSDictionary alloc] initWithObjectsAndKeys:sources, @"source", nil];
+        [plistDict writeToFile:prefixersPlist atomically:YES];
+      }
+    }
+    return 0;
+  } else {
+    return -3;
+  }
 }
