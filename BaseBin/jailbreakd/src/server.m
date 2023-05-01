@@ -98,7 +98,7 @@ int processBinary(NSString *binaryPath)
 				};
 
 				tcCheckBlock(binaryPath);
-				
+
 				machoEnumerateDependencies(machoFile, bestArch, binaryPath, tcCheckBlock);
 
 				dynamicTrustCacheUploadCDHashesFromArray(nonTrustCachedCDHashes);
@@ -195,7 +195,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 			JBLogDebug("received %s message %d with dictionary: %s (from binary: %s)", systemwide ? "systemwide" : "", msgId, description, proc_get_path(clientPid).UTF8String);
 			free(description);
 
-			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY || 
+			BOOL isAllowedSystemWide = msgId == JBD_MSG_PROCESS_BINARY ||
 									msgId == JBD_MSG_DEBUG_ME ||
 									msgId == JBD_MSG_SETUID_FIX ||
 									msgId == JBD_MSG_FORK_FIX ||
@@ -208,14 +208,14 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						xpc_dictionary_set_uint64(reply, "kcallStatus", gKCallStatus);
 						break;
 					}
-					
+
 					case JBD_MSG_PPL_INIT: {
 						if (gPPLRWStatus == kPPLRWStatusNotInitialized) {
 							initPPLPrimitives();
 						}
 						break;
 					}
-					
+
 					case JBD_MSG_PAC_INIT: {
 						if (gKCallStatus == kKcallStatusNotInitialized && gPPLRWStatus == kPPLRWStatusInitialized) {
 							uint64_t kernelAllocation = bootInfo_getUInt64(@"jailbreakd_pac_allocation");
@@ -226,14 +226,14 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 							break;
 						}
 					}
-					
+
 					case JBD_MSG_PAC_FINALIZE: {
 						if (gKCallStatus == kKcallStatusPrepared && gPPLRWStatus == kPPLRWStatusInitialized) {
 							finalizePACPrimitives();
 						}
 						break;
 					}
-					
+
 					case JBD_MSG_HANDOFF_PPL: {
 						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
 							int r = handoffPPLPrimitives(clientPid);
@@ -244,7 +244,7 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						}
 						break;
 					}
-					
+
 					case JBD_MSG_DO_KCALL: {
 						if (gKCallStatus == kKcallStatusFinalized) {
 							uint64_t func = xpc_dictionary_get_uint64(message, "func");
@@ -440,6 +440,19 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 							result = setFakeLibVisible(visible);
 						}
 						else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
+					}
+
+					case JBD_BINDMOUNT_PATH: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							const char *source = xpc_dictionary_get_string(message, "source");
+							const bool check_existances = xpc_dictionary_get_bool(message, "check_existances");
+							bindMountPath([NSString stringWithUTF8String:source], check_existances);
+						} else {
 							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
 						}
 						xpc_dictionary_set_int64(reply, "result", result);
