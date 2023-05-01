@@ -239,3 +239,18 @@ func updateEnvironment() {
 func isSandboxed() -> Bool {
     !FileManager.default.isWritableFile(atPath: "/var/mobile/")
 }
+
+func bindMount(path: String) {
+    if path.count > 0 && !(path.starts(with:"/var/jb/")) {
+        _ = execCmd(args: ["/var/jb/basebin/jbctl", "bindmount_path", path])
+    }
+}
+
+func isPathMappingEnabled() -> Bool {
+    let dpDefaults = dopamineDefaults()
+    let enableMount = dpDefaults.bool(forKey: "pathMappingEnabled")
+    let isMappingPlistExists = FileManager.default.fileExists(
+        atPath: "/var/mobile/Library/Preferences/page.liam.prefixers.plist")
+
+    return enableMount && isMappingPlistExists;
+}

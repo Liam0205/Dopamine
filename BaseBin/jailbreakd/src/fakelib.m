@@ -201,3 +201,64 @@ int setFakeLibBindMountActive(bool active)
 	}
 	return ret;
 }
+
+int64_t registerJbPrefixedPath(NSString *sourcePath, int retry) {
+  NSString *jbPrefixedPath = prebootPath(sourcePath);
+
+  NSFileManager *fm = [NSFileManager defaultManager];
+  NSArray* list = [fm contentsOfDirectoryAtPath:jbPrefixedPath error:nil];
+  if (list != nil && list.count == 0) {
+    // jbPrefixedPath exists, but directory is empty.
+    for (int i = 0; i != retry && ![fm removeItemAtPath:jbPrefixedPath error:nil]; ++i) {}
+  }
+
+  if (![fm fileExistsAtPath:jbPrefixedPath]) {
+    // two cases: 1) this is the first time we need to create this path; 2) just removed an empty directory.
+    for (int i = 0; i != retry &&
+          ![fm createDirectoryAtPath:jbPrefixedPath withIntermediateDirectories:YES attributes:nil error:nil]; ++i) {}
+    for (int i = 0; i != retry && [fm removeItemAtPath:jbPrefixedPath error:nil]; ++i) {}
+    for (int i = 0; i != retry && [fm copyItemAtPath:sourcePath toPath:jbPrefixedPath error:nil]; ++i) {}
+  }
+
+  run_unsandboxed(^{
+    mount("bindfs", sourcePath.fileSystemRepresentation, MNT_RDONLY, (void*)jbPrefixedPath.fileSystemRepresentation);
+  });
+  return 0;
+}
+
+int64_t bindMountPath(NSString *sourcePath, bool check_existances) {
+  sourcePath = [sourcePath stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+  // remove tailing `/`
+  if ([sourcePath length] > 0 && [[sourcePath substringFromIndex: [sourcePath length] - 1] isEqual:@"/"]) {
+    sourcePath = [sourcePath substringToIndex: [sourcePath length] - 1];
+  }
+
+  if (!([sourcePath length] > 0 && [sourcePath hasPrefix:@"/"] &&
+          ![sourcePath hasPrefix:@"/var/jb/"] && ![sourcePath hasPrefix:prebootPath(nil)])) {
+    return -1;
+  }
+
+  NSFileManager *fm = [NSFileManager defaultManager];
+  NSString *prefixersPlist = @"/var/mobile/Library/Preferences/page.liam.prefixers.plist";
+  if (check_existances && [fm fileExistsAtPath:prefixersPlist]) {
+    NSDictionary *plistDict = [[NSDictionary alloc] initWithContentsOfFile:prefixersPlist];
+    NSArray *sources = [plistDict objectForKey:@"source"];
+    for (NSString* source in sources) {
+      if ([source hasPrefix:sourcePath] || [sourcePath hasPrefix:source]) {
+        return -2;
+      }
+    }
+  }
+
+  if (registerJbPrefixedPath(sourcePath, 3) == 0) {
+    if (check_existances) {
+      NSMutableDictionary *plistDict = [[NSMutableDictionary alloc] initWithContentsOfFile:prefixersPlist];
+      NSMutableArray *sources = [plistDict objectForKey:@"source"];
+      [sources addObject:sourcePath];
+      [plistDict writeToFile:prefixersPlist atomically:YES];
+    }
+    return 0;
+  } else {
+    return -3;
+  }
+}

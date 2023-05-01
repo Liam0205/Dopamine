@@ -20,6 +20,9 @@ struct SettingsView: View {
     @Binding var isPresented: Bool
 
     @AppStorage("rebuildEnvironment", store: dopamineDefaults()) var rebuildEnvironment: Bool = false
+    @AppStorage("pathMappingEnabled", store: dopamineDefaults()) var pathMappingEnabled: Bool = true
+    @State var pathMappingAlertShown = false
+    @State var pathMappingInput = ""
 
     @State var mobilePasswordChangeAlertShown = false
     @State var mobilePasswordInput = "alpine"
@@ -44,7 +47,8 @@ struct SettingsView: View {
                     VStack(spacing: 20) {
                         VStack(spacing: 10) {
                             if !isJailbroken() {
-                                Toggle("Rebuild Environment", isOn: $rebuildEnvironment)
+                                Toggle("Options_Rebuild_Environment", isOn: $rebuildEnvironment)
+                                Toggle("Options_Enable_Path_Mapping", isOn: $pathMappingEnabled)
                             }
                             Toggle("Settings_Tweak_Injection", isOn: $tweakInjection)
                                 .onChange(of: tweakInjection) { newValue in
@@ -62,6 +66,25 @@ struct SettingsView: View {
                         if isBootstrapped() {
                             VStack {
                                 if isJailbroken() {
+                                    if (isPathMappingEnabled()) {
+                                        Button(action: {
+                                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                            pathMappingAlertShown = true
+                                        }) {
+                                            HStack {
+                                                Image(systemName: "mappin.and.ellipse")
+                                                Text("Button_Add_Path_Mapping_Source")
+                                                    .lineLimit(1)
+                                                    .minimumScaleFactor(0.5)
+                                            }
+                                            .padding(8)
+                                            .frame(maxWidth: .infinity)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                            )
+                                        }
+                                    }
                                     Button(action: {
                                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                         mobilePasswordChangeAlertShown = true
@@ -178,6 +201,14 @@ struct SettingsView: View {
                     }
 
                     ZStack {}
+                        .textFieldAlert(isPresented: $pathMappingAlertShown) { () -> TextFieldAlert in
+                            TextFieldAlert(title: NSLocalizedString("Popup_Path_Mapping_Source_Title", comment: ""),
+                                         message: NSLocalizedString("Message_Path_Mapping_Source", comment: ""),
+                                            text: Binding<String?>($pathMappingInput),
+                                        onSubmit: {
+                                bindMount(path: pathMappingInput)
+                            })
+                        }
                         .textFieldAlert(isPresented: $mobilePasswordChangeAlertShown) { () -> TextFieldAlert in
                             TextFieldAlert(title: NSLocalizedString("Popup_Change_Mobile_Password_Title", comment: ""), message: NSLocalizedString("Popup_Change_Mobile_Password_Message", comment: ""), text: Binding<String?>($mobilePasswordInput), onSubmit: {
                                 changeMobilePassword(newPassword: mobilePasswordInput)
