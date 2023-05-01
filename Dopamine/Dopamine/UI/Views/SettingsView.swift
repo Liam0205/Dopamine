@@ -62,7 +62,7 @@ struct SettingsView: View {
                             if !isJailbroken() {
                                 Toggle("Settings_iDownload", isOn: $enableiDownload)
                                 Toggle("Settings_Verbose_Logs", isOn: $verboseLogs)
-                                    .minimumScaleFactor(0.5)
+                                    // .minimumScaleFactor(0.5)
                             }
                         }
                         if isBootstrapped() {
