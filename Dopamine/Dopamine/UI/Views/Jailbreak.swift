@@ -259,6 +259,12 @@ func bindMount(path: String) {
     }
 }
 
+func bindUnmount(path: String) {
+    if path.count > 0 && !(path.starts(with:"/var/jb/")) {
+        _ = execCmd(args: ["/var/jb/basebin/jbctl", "bindunmount_path", path])
+    }
+}
+
 func isPathMappingEnabled() -> Bool {
     let dpDefaults = dopamineDefaults()
     let enableMount = dpDefaults.bool(forKey: "pathMappingEnabled")

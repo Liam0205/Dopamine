@@ -258,3 +258,13 @@ int64_t jbdBindMountPath(NSString *source, bool check_existances) {
 	if (!reply) return -10;
 	return xpc_dictionary_get_int64(reply, "result");
 }
+
+int64_t jbdBindUnmountPath(NSString *source) {
+	xpc_object_t message = xpc_dictionary_create_empty();
+	xpc_dictionary_set_uint64(message, "id", JBD_BINDUNMOUNT_PATH);
+	xpc_dictionary_set_string(message, "source", [source cStringUsingEncoding:NSUTF8StringEncoding]);
+
+	xpc_object_t reply = sendJBDMessage(message);
+	if (!reply) return -10;
+	return xpc_dictionary_get_int64(reply, "result");
+}
