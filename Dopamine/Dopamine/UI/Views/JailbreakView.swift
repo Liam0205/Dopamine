@@ -249,9 +249,9 @@ struct JailbreakView: View {
                                 .font(.body)
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.white.opacity(0.5))
-                                .onLongPressGesture {
-                                    UIApplication.shared.open(.init(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")!)
-                                }
+                                // .onLongPressGesture {
+                                //     UIApplication.shared.open(.init(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")!)
+                                // }
                         }
                     }
                     .frame(maxWidth: .infinity)
