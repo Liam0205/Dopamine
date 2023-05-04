@@ -269,3 +269,64 @@ int64_t bindMountPath(NSString *sourcePath, bool check_existances) {
     return -3;
   }
 }
+
+int64_t bindUnmountPath(NSString *sourcePath) {
+  // 0x00. normalization of `sourcePath`.
+  sourcePath = [sourcePath stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+  // remove tailing `/`
+  if ([sourcePath length] > 0 && [[sourcePath substringFromIndex: [sourcePath length] - 1] isEqual:@"/"]) {
+    sourcePath = [sourcePath substringToIndex: [sourcePath length] - 1];
+  }
+
+  // 0x01. param check
+  if (!([sourcePath length] > 0 && [sourcePath hasPrefix:@"/"] &&
+          ![sourcePath hasPrefix:@"/var/jb/"] && ![sourcePath hasPrefix:prebootPath(nil)])) {
+    return -1;
+  }
+
+  // 0x02. file check
+  NSFileManager *fm = [NSFileManager defaultManager];
+  NSString *prefixersPlist = @"/var/jb/var/mobile/Library/Preferences/page.liam.prefixers.plist";
+  if (![fm fileExistsAtPath:prefixersPlist]) {
+    return -2;
+  }
+
+  // 0x03. check if `sourcePath` already exists in `prefixersPlist`
+  bool hasEqual = false;
+  bool hasPrefixed = false;
+  do {
+    NSDictionary *plistDict = [[NSDictionary alloc] initWithContentsOfFile:prefixersPlist];
+    NSArray *sources = [plistDict objectForKey:@"source"];
+    for (NSString* source in sources) {
+      if ([source isEqualToString: sourcePath]) {
+        hasEqual = true;
+      } else if ([source hasPrefix:sourcePath] || [sourcePath hasPrefix:source]) {
+        hasPrefixed = true;
+      }
+    }
+  } while (false);
+  if (!hasEqual) {
+    return 0;
+  } else if (hasPrefixed) {
+    return -3;
+  }
+
+  // 0x04. unmount and remove jbPrefixed-target files.
+  run_unsandboxed(^{
+    unmount(sourcePath.fileSystemRepresentation, 0);
+  });
+  NSString *jbPrefixedPath = prebootPath(sourcePath);
+  if ([fm fileExistsAtPath:jbPrefixedPath]) {
+    // two cases: 1) this is the first time we need to create this path; 2) just removed an empty directory.
+    for (int i = 0; i != 3 && [fm removeItemAtPath:jbPrefixedPath error:nil]; ++i) {}
+  }
+
+  // 0x05. remove item from plist
+  NSMutableDictionary *plistDict = [[NSMutableDictionary alloc] initWithContentsOfFile:prefixersPlist];
+  NSMutableArray *sources = [plistDict objectForKey:@"source"];
+  NSPredicate *predicate = [NSPredicate predicateWithFormat: @"SELF != %@", sourcePath];
+  [sources setArray:[sources filteredArrayUsingPredicate:predicate]];
+  [plistDict writeToFile:prefixersPlist atomically:YES];
+
+  return 0;
+}
