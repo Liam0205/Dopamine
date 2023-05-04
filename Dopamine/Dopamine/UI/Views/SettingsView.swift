@@ -23,6 +23,8 @@ struct SettingsView: View {
     @AppStorage("pathMappingEnabled", store: dopamineDefaults()) var pathMappingEnabled: Bool = true
     @State var pathMappingAlertShown = false
     @State var pathMappingInput = ""
+    @State var pathMappingRemoveAlertShown = false
+    @State var pathMappingRemoveInput = ""
 
     @State var mobilePasswordChangeAlertShown = false
     @State var mobilePasswordInput = "alpine"
@@ -76,7 +78,7 @@ struct SettingsView: View {
                                             pathMappingAlertShown = true
                                         }) {
                                             HStack {
-                                                Image(systemName: "mappin.and.ellipse")
+                                                Image(systemName: "mappin.circle")
                                                 Text("Button_Add_Path_Mapping_Source")
                                                     .lineLimit(1)
                                                     .minimumScaleFactor(0.5)
@@ -88,6 +90,25 @@ struct SettingsView: View {
                                                     .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
                                             )
                                         }
+
+                                        Button(action: {
+                                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                            pathMappingRemoveAlertShown = true
+                                        }) {
+                                            HStack {
+                                                Image(systemName: "mappin.slash.circle")
+                                                Text("Button_Remove_Path_Mapping_Source")
+                                                    .lineLimit(1)
+                                                    .minimumScaleFactor(0.5)
+                                            }
+                                            .padding(8)
+                                            .frame(maxWidth: .infinity)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+                                            )
+                                        }
+                                        .padding(.bottom)
                                     }
                                     Button(action: {
                                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -213,6 +234,16 @@ struct SettingsView: View {
                                             text: Binding<String?>($pathMappingInput),
                                         onSubmit: {
                                 bindMount(path: pathMappingInput)
+                            })
+                        }
+                        .textFieldAlert(isPresented: $pathMappingRemoveAlertShown) { () -> TextFieldAlert in
+                            TextFieldAlert(title: NSLocalizedString("Popup_Remove_Path_Mapping_Source_Title",
+                                                                    comment: ""),
+                                         message: NSLocalizedString("Message_Remove_Path_Mapping_Source",
+                                                                    comment: ""),
+                                            text: Binding<String?>($pathMappingRemoveInput),
+                                        onSubmit: {
+                                    bindUnmount(path: pathMappingRemoveInput)
                             })
                         }
                         .textFieldAlert(isPresented: $mobilePasswordChangeAlertShown) { () -> TextFieldAlert in
