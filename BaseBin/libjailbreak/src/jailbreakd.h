@@ -24,6 +24,7 @@ typedef enum {
   JBD_SET_FAKELIB_VISIBLE = 30,
 
   JBD_BINDMOUNT_PATH = 101,
+  JBD_BINDUNMOUNT_PATH = 102,
 } JBD_MESSAGE_ID;
 
 typedef enum {
@@ -68,3 +69,4 @@ int64_t jbdProcessBinary(const char *filePath);
 int64_t jbdProcSetDebugged(pid_t pid);
 
 int64_t jbdBindMountPath(NSString *source, bool check_existances);
+int64_t jbdBindUnmountPath(NSString *source);
