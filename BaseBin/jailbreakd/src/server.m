@@ -374,6 +374,18 @@ void jailbreakd_received_message(mach_port_t machPort, bool systemwide)
 						xpc_dictionary_set_int64(reply, "result", result);
 						break;
 					}
+
+					case JBD_BINDUNMOUNT_PATH: {
+						int64_t result = 0;
+						if (gPPLRWStatus == kPPLRWStatusInitialized && gKCallStatus == kKcallStatusFinalized) {
+							const char *source = xpc_dictionary_get_string(message, "source");
+							bindUnmountPath([NSString stringWithUTF8String:source]);
+						} else {
+							result = JBD_ERR_PRIMITIVE_NOT_INITIALIZED;
+						}
+						xpc_dictionary_set_int64(reply, "result", result);
+						break;
+					}
 				}
 			}
 		}

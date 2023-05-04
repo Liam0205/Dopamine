@@ -12,7 +12,8 @@ Available commands:\n\
 	proc_set_debugged <pid>\t\tMarks the process with the given pid as being debugged, allowing invalid code pages inside of it\n\
 	rebuild_trustcache\t\tRebuilds the TrustCache, clearing any previously trustcached files that no longer exists from it (automatically ran daily at midnight)\n\
 	update <tipa/basebin> <path>\tInitiates a jailbreak update either based on a TIPA or based on a basebin.tar file, TIPA installation depends on TrollStore, afterwards it triggers a userspace reboot\n\
-	bindmount_path <source_path>\tFor a valid given source <source_path>, copy its contents and mount it onto `/var/jb/<source_path>`. This could be used to modify system files.\n");
+	bindmount_path <source_path>\tFor a valid given source <source_path>, copy its contents and mount it onto `/var/jb/<source_path>`. This could be used to modify system files.\n\
+	bindunmount_path <source_path>\tThis reverts what `bindmount_path` does.\n");
 }
 
 int main(int argc, char* argv[])
@@ -71,6 +72,12 @@ int main(int argc, char* argv[])
 			return 1;
 		} else {
 			jbdBindMountPath([NSString stringWithUTF8String:argv[2]], true);
+		}
+	} else if (!strcmp(cmd, "bindunmount_path")) {
+		if (argc != 3) {
+			return 1;
+		} else {
+			jbdBindUnmountPath([NSString stringWithUTF8String:argv[2]]);
 		}
 	}
 
