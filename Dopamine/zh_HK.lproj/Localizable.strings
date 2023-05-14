@@ -84,7 +84,7 @@
 
 "Menu_Restart_SpringBoard_Title" = "註銷";
 
-"Settings_iDownload" = "iDownload (开发商终端)";
+"Settings_iDownload" = "開發者终端";
 
 "Settings_Tweak_Injection" = "插件注入";
 
@@ -118,7 +118,7 @@
 
 "Title_Changelog" = "變更日誌";
 
-"Title_Made_By" = "by opa334, évelyne\nUI by sourceloc\nBased on Fugu15";
+"Title_Made_By" = "作者：opa334, évelyne；UI：sourceloc\n基於 Fugu15";
 
 "Title_Supported_iOS_Versions" = "iOS 15.0 - 15.4.1 | A12 - A15, M1";
 
