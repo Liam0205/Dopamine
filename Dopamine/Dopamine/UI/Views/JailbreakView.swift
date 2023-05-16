@@ -54,6 +54,10 @@ struct JailbreakView: View {
 
     @State var aprilFirstAlert = whatCouldThisVariablePossiblyEvenMean
 
+    @State var respringAlert = false
+    @State var userspaceRebootAlert = false
+    @State var rebootAlert = false
+
     @AppStorage("verboseLogsEnabled", store: dopamineDefaults()) var advancedLogsByDefault: Bool = false
     @State var advancedLogsTemporarilyEnabled: Bool = false
 
@@ -181,6 +185,25 @@ struct JailbreakView: View {
                 UIApplication.shared.open(.init(string: "https://liam.page/")!)
             }
         }
+        .alert("Sure_Respring", isPresented: $respringAlert) {
+          Button("Button_Cancel") {}
+          Button("Button_Set") { respring() }
+        }
+        .alert("Sure_Reboot_Userspace", isPresented: $userspaceRebootAlert) {
+          Button("Button_Cancel") {}
+          Button("Button_Set") { userspaceReboot() }
+        }
+        .alert(isPresented: $rebootAlert) {
+          Alert(
+            title: Text("Sure_Reboot"),
+            message: Text("Sure_Reboot_Message"),
+            primaryButton: .cancel (Text("Button_Cancel")),
+            secondaryButton: .destructive (
+              Text("Button_Set"),
+              action: doReboot
+            )
+          )
+        }
     }
 
 
@@ -217,9 +240,9 @@ struct JailbreakView: View {
         VStack {
             let menuOptions: [MenuOption] = [
                 .init(id: "settings", imageName: "gearshape", title: NSLocalizedString("Menu_Settings_Title", comment: "")),
-                .init(id: "respring", imageName: "arrow.clockwise", title: NSLocalizedString("Menu_Restart_SpringBoard_Title", comment: ""), showUnjailbroken: false, action: respring),
-                .init(id: "userspace", imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: userspaceReboot),
-                .init(id: "reboot", imageName: "arrow.clockwise.circle.fill", title: NSLocalizedString("Menu_Reboot_Title", comment: ""), showUnjailbroken: false, action: doReboot),
+                .init(id: "respring", imageName: "arrow.clockwise", title: NSLocalizedString("Menu_Restart_SpringBoard_Title", comment: ""), showUnjailbroken: false, action: { respringAlert = true } ),
+                .init(id: "userspace", imageName: "arrow.clockwise.circle", title: NSLocalizedString("Menu_Reboot_Userspace_Title", comment: ""), showUnjailbroken: false, action: { userspaceRebootAlert = true } ),
+                .init(id: "reboot", imageName: "arrow.clockwise.circle.fill", title: NSLocalizedString("Menu_Reboot_Title", comment: ""), showUnjailbroken: false, action: { rebootAlert = true } ),
                 .init(id: "credits", imageName: "info.circle", title: NSLocalizedString("Menu_Credits_Title", comment: "")),
             ]
             ForEach(menuOptions) { option in
