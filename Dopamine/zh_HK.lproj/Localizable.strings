@@ -213,3 +213,5 @@
 "Sure_Reboot" = "確認要重啟設備嗎？";
 
 "Sure_Reboot_Message" = "重啟設備將退出越獄環境。你講需要重新打開 Dopamine 越獄才能再次進入越獄狀態。";
+
+"Options_Block_Dopamine_Updates" = "屏蔽更新";
