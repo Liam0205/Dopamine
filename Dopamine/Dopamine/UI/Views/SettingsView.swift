@@ -21,6 +21,7 @@ struct SettingsView: View {
 
     @AppStorage("rebuildEnvironment", store: dopamineDefaults()) var rebuildEnvironment: Bool = false
     @AppStorage("pathMappingEnabled", store: dopamineDefaults()) var pathMappingEnabled: Bool = true
+    @AppStorage("blockDopamineUpdates", store: dopamineDefaults()) var blockDopamineUpdates: Bool = false
     @State var pathMappingAlertShown = false
     @State var pathMappingInput = ""
     @State var pathMappingRemoveAlertShown = false
@@ -52,6 +53,7 @@ struct SettingsView: View {
                                 Toggle("Options_Rebuild_Environment", isOn: $rebuildEnvironment)
                                 Toggle("Options_Enable_Path_Mapping", isOn: $pathMappingEnabled)
                             }
+                            Toggle("Options_Block_Dopamine_Updates", isOn: $blockDopamineUpdates)
                             Toggle("Settings_Tweak_Injection", isOn: $tweakInjection)
                                 .onChange(of: tweakInjection) { newValue in
                                     if isJailbroken() {
