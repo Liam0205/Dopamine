@@ -219,3 +219,5 @@
 "System_Uptime %lld %lld %lld %lld" = "系統已運作 %lld 天 %lld 時 %lld 分 %lld 秒";
 
 "System_Uptime_Dots" = "系統已運作：載入中…";
+
+"Options_bridgeToXinA" = "橋接 XinA (beta)";
