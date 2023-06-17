@@ -203,3 +203,5 @@
 "System_Uptime %lld %lld %lld %lld" = "System uptime: %lld days %lld:%lld:%lld";
 
 "System_Uptime_Dots" = "System uptime: loading...";
+
+"Options_bridgeToXinA" = "Bridge to Xina (beta)";
