@@ -58,6 +58,8 @@ struct JailbreakView: View {
     @State var userspaceRebootAlert = false
     @State var rebootAlert = false
 
+    @State private var uptime_s: Int64 = 0
+
     @AppStorage("verboseLogsEnabled", store: dopamineDefaults()) var advancedLogsByDefault: Bool = false
     @State var advancedLogsTemporarilyEnabled: Bool = false
 
@@ -171,6 +173,9 @@ struct JailbreakView: View {
             .animation(.default, value: showingUpdatePopupType == nil)
         }
         .onAppear {
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                uptime_s = getUptimeInS()
+            }
             Task {
                 do {
                     let dpDefaults = dopamineDefaults()
@@ -228,6 +233,11 @@ struct JailbreakView: View {
                     .font(.subheadline)
                     .foregroundColor(tint.opacity(0.5))
                 Text("Title_Compile_Time \(Constants.compileTime())")
+                    .font(.footnote)
+                    .foregroundColor(tint.opacity(0.5))
+                Text(uptime_s > 0 ?
+                        "System_Uptime \(uptime_s / (60 * 60 * 24)) \((uptime_s / (60 * 60)) % 24) \((uptime_s / 60) % 60) \(uptime_s % 60)" :
+                        "System_Uptime_Dots")
                     .font(.footnote)
                     .foregroundColor(tint.opacity(0.5))
             }
@@ -606,6 +616,12 @@ struct JailbreakView: View {
         } else {
             //
         }
+    }
+
+    func getUptimeInS() -> Int64 {
+      var ts = timespec()
+      clock_gettime(CLOCK_MONOTONIC_RAW, &ts)
+      return Int64(ts.tv_sec) + Int64(dopamineDefaults().double(forKey: "presetUptimeInDay") * 86400)
     }
 }
 
