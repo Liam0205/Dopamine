@@ -215,3 +215,7 @@
 "Sure_Reboot_Message" = "重启设备将退出越狱环境。你将需要重新打开 Dopamine 越狱才能再次进入越狱状态。";
 
 "Options_Block_Dopamine_Updates" = "屏蔽更新";
+
+"System_Uptime %lld %lld %lld %lld" = "系统已运行：%lld 天 %lld 时 %lld 分 %lld 秒";
+
+"System_Uptime_Dots" = "系统已运行：载入中…";
