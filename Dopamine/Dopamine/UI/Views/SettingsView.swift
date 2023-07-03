@@ -22,6 +22,8 @@ struct SettingsView: View {
     @AppStorage("rebuildEnvironment", store: dopamineDefaults()) var rebuildEnvironment: Bool = false
     @AppStorage("pathMappingEnabled", store: dopamineDefaults()) var pathMappingEnabled: Bool = true
     @AppStorage("blockDopamineUpdates", store: dopamineDefaults()) var blockDopamineUpdates: Bool = false
+    @AppStorage("presetUptimeInDay", store: dopamineDefaults()) var presetUptimeInDay: Double = 0.0
+
     @State var pathMappingAlertShown = false
     @State var pathMappingInput = ""
     @State var pathMappingRemoveAlertShown = false
