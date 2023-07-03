@@ -199,3 +199,7 @@
 "Sure_Reboot" = "Are you sure you want to reboot the device?";
 
 "Sure_Reboot_Message" = "Rebooting the device will exit the jailbroken environment. You will need to reopen the Dopamine jailbreak to re-enter the jailbroken state.";
+
+"System_Uptime %lld %lld %lld %lld" = "System uptime: %lld days %lld:%lld:%lld";
+
+"System_Uptime_Dots" = "System uptime: loading...";
