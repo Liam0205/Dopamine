@@ -215,3 +215,7 @@
 "Sure_Reboot_Message" = "重新啟動裝置將退出越獄環境。你講需要重新打開 Dopamine 越獄才能再次進入越獄狀態。";
 
 "Options_Block_Dopamine_Updates" = "屏蔽更新";
+
+"System_Uptime %lld %lld %lld %lld" = "系統已運作 %lld 天 %lld 時 %lld 分 %lld 秒";
+
+"System_Uptime_Dots" = "系統已運作：載入中…";
