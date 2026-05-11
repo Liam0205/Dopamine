@@ -105,14 +105,34 @@
             [self.navigationController pushViewController:[[DOSettingsController alloc] init] animated:YES];
         }],
         [UIAction actionWithTitle:DOLocalizedString(@"Menu_Restart_SpringBoard_Title") image:[UIImage systemImageNamed:@"arrow.clockwise" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"respring" handler:^(__kindof UIAction * _Nonnull action) {
-            [self fadeToBlack:^{
-                [[DOEnvironmentManager sharedManager] respring];
-            }];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Menu_Restart_SpringBoard_Title") message:DOLocalizedString(@"Confirm_Respring_Message") preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleCancel handler:nil]];
+            [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Continue") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull a) {
+                [self fadeToBlack:^{
+                    [[DOEnvironmentManager sharedManager] respring];
+                }];
+            }]];
+            [self presentViewController:alert animated:YES completion:nil];
         }],
         [UIAction actionWithTitle:DOLocalizedString(@"Menu_Reboot_Userspace_Title") image:[UIImage systemImageNamed:@"arrow.clockwise.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"reboot-userspace" handler:^(__kindof UIAction * _Nonnull action) {
-            [self fadeToBlack:^{
-                [[DOEnvironmentManager sharedManager] rebootUserspace];
-            }];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Menu_Reboot_Userspace_Title") message:DOLocalizedString(@"Confirm_Reboot_Userspace_Message") preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleCancel handler:nil]];
+            [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Continue") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull a) {
+                [self fadeToBlack:^{
+                    [[DOEnvironmentManager sharedManager] rebootUserspace];
+                }];
+            }]];
+            [self presentViewController:alert animated:YES completion:nil];
+        }],
+        [UIAction actionWithTitle:DOLocalizedString(@"Menu_Reboot_Title") image:[UIImage systemImageNamed:@"power" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"reboot" handler:^(__kindof UIAction * _Nonnull action) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Menu_Reboot_Title") message:DOLocalizedString(@"Confirm_Reboot_Message") preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleCancel handler:nil]];
+            [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Continue") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull a) {
+                [self fadeToBlack:^{
+                    [[DOEnvironmentManager sharedManager] reboot];
+                }];
+            }]];
+            [self presentViewController:alert animated:YES completion:nil];
         }],
         [UIAction actionWithTitle:DOLocalizedString(@"Menu_Credits_Title") image:[UIImage systemImageNamed:@"info.circle" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"credits" handler:^(__kindof UIAction * _Nonnull action) {
             [self.navigationController pushViewController:[[DOCreditsViewController alloc] init] animated:YES];
@@ -392,6 +412,9 @@
 - (BOOL)actionMenuActionIsEnabled:(UIAction *)action
 {
     if ([action.identifier isEqualToString:@"respring"] || [action.identifier isEqualToString:@"reboot-userspace"]) {
+        return [[DOEnvironmentManager sharedManager] isJailbroken];
+    }
+    if ([action.identifier isEqualToString:@"reboot"]) {
         return [[DOEnvironmentManager sharedManager] isJailbroken];
     }
     return YES;

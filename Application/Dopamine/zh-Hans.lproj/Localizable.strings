@@ -13,7 +13,13 @@
 "Menu_Settings_Title" = "设置";
 "Menu_Restart_SpringBoard_Title" = "重启 SpringBoard";
 "Menu_Reboot_Userspace_Title" = "重启用户空间";
+"Menu_Reboot_Title" = "重启设备";
 "Menu_Credits_Title" = "关于";
+
+// Confirmation Alerts
+"Confirm_Respring_Message" = "确定要重启 SpringBoard 吗？";
+"Confirm_Reboot_Userspace_Message" = "确定要重启用户空间吗？";
+"Confirm_Reboot_Message" = "确定要重启设备吗？";
 
 // System Info
 "System_Uptime" = "运行时间：%lld天 %lld时 %lld分 %lld秒";

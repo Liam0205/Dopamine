@@ -13,7 +13,13 @@
 "Menu_Settings_Title" = "Settings";
 "Menu_Restart_SpringBoard_Title" = "Restart SpringBoard";
 "Menu_Reboot_Userspace_Title" = "Reboot Userspace";
+"Menu_Reboot_Title" = "Reboot";
 "Menu_Credits_Title" = "Credits";
+
+// Confirmation Alerts
+"Confirm_Respring_Message" = "Are you sure you want to restart SpringBoard?";
+"Confirm_Reboot_Userspace_Message" = "Are you sure you want to reboot userspace?";
+"Confirm_Reboot_Message" = "Are you sure you want to reboot the device?";
 
 // System Info
 "System_Uptime" = "Uptime: %lldd %lldh %lldm %llds";
