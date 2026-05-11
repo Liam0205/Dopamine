@@ -51,6 +51,7 @@
 "Settings_iDownload" = "iDownload (开发者终端)";
 "Settings_Verbose_Logs" = "详细日志";
 "Settings_Apps_JIT" = "允许 App 使用 JIT";
+"Settings_Block_Updates" = "屏蔽更新";
 "Settings_Jetsam_Multiplier" = "Jetsam 倍数";
 
 // Settings Buttons

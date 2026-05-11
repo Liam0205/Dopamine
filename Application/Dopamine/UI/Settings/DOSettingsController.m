@@ -229,7 +229,13 @@
             [tweakInjectionSpecifier setProperty:@"tweakInjectionEnabled" forKey:@"key"];
             [tweakInjectionSpecifier setProperty:@YES forKey:@"default"];
             [specifiers addObject:tweakInjectionSpecifier];
-            
+
+            PSSpecifier *blockUpdatesSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_Block_Updates") target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
+            [blockUpdatesSpecifier setProperty:@YES forKey:@"enabled"];
+            [blockUpdatesSpecifier setProperty:@"blockDopamineUpdates" forKey:@"key"];
+            [blockUpdatesSpecifier setProperty:@NO forKey:@"default"];
+            [specifiers addObject:blockUpdatesSpecifier];
+
             if (!envManager.isJailbroken) {
                 PSSpecifier *verboseLogSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_Verbose_Logs") target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
                 [verboseLogSpecifier setProperty:@YES forKey:@"enabled"];
