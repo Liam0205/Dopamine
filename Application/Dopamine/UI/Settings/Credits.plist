@@ -89,6 +89,27 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
+			<string>Customization</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>headerCellClass</key>
+			<string>DOCreditsCell</string>
+			<key>names</key>
+			<array>
+				<dict>
+					<key>name</key>
+					<string>Liam</string>
+					<key>link</key>
+					<string>https://github.com/Liam0205</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
 			<string>UI and Design</string>
 		</dict>
 		<dict>

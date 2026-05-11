@@ -192,8 +192,17 @@
             NSArray *assets = release[@"assets"];
             if (assets && assets.count > 0)
             {
+                NSString *downloadUrl = nil;
+                for (NSDictionary *asset in assets) {
+                    if ([asset[@"name"] hasSuffix:@".tipa"]) {
+                        downloadUrl = asset[@"browser_download_url"];
+                        break;
+                    }
+                }
+                if (!downloadUrl)
+                    downloadUrl = assets[0][@"browser_download_url"];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    self.lastestDownloadUrl = release[@"assets"][0][@"browser_download_url"];
+                    self.lastestDownloadUrl = downloadUrl;
                     self.button.hidden = NO;
                 });
             }
