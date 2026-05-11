@@ -53,6 +53,7 @@
 "Settings_Apps_JIT" = "Allow JIT in Apps";
 "Settings_Allow_Old_arm64e_ABI_Libraries" = "Allow Legacy arm64e Libraries";
 "Settings_Block_Updates" = "Block Updates";
+"Settings_Rebuild_Environment" = "Rebuild Environment";
 "Settings_Jetsam_Multiplier" = "Jetsam Multiplier";
 
 // Settings Buttons
