@@ -15,6 +15,7 @@
 #import "DOLogCrashViewController.h"
 #import <pthread.h>
 #import <libjailbreak/libjailbreak.h>
+#import <time.h>
 
 @interface DOMainViewController ()
 
@@ -23,6 +24,8 @@
 @property DOActionMenuButton *updateButton;
 @property(nonatomic) BOOL hideStatusBar;
 @property(nonatomic) BOOL hideHomeIndicator;
+@property UILabel *uptimeLabel;
+@property NSTimer *uptimeTimer;
 
 @end
 
@@ -73,18 +76,30 @@
     }
 
     //Header
-    DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles: @[
+    NSMutableArray *subtitles = [NSMutableArray arrayWithArray:@[
         [DOGlobalAppearance mainSubtitleString:[[DOEnvironmentManager sharedManager] versionSupportString]],
         [DOGlobalAppearance secondarySubtitleString:DOLocalizedString(@"Credits_Made_By")],
     ]];
-    
+#ifdef COMPILE_TIME
+    NSString *buildInfo = [NSString stringWithFormat:@"%@ | %s", [[DOEnvironmentManager sharedManager] appVersionDisplayString], COMPILE_TIME];
+    [subtitles addObject:[DOGlobalAppearance secondarySubtitleString:buildInfo]];
+#endif
+    DOHeaderView *headerView = [[DOHeaderView alloc] initWithImage: [UIImage imageNamed:@"Dopamine"] subtitles:subtitles];
+
     [stackView addArrangedSubview:headerView];
 
     [NSLayoutConstraint activateConstraints:@[
         [headerView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:5],
         [headerView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor]
     ]];
-    
+
+    // Uptime label
+    self.uptimeLabel = [[UILabel alloc] init];
+    self.uptimeLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.uptimeLabel.attributedText = [DOGlobalAppearance secondarySubtitleString:[self formattedUptime]];
+    [stackView addArrangedSubview:self.uptimeLabel];
+    self.uptimeTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateUptime) userInfo:nil repeats:YES];
+
     //Action Menu
     DOActionMenuView *actionView = [[DOActionMenuView alloc] initWithActions:@[
         [UIAction actionWithTitle:DOLocalizedString(@"Menu_Settings_Title") image:[UIImage systemImageNamed:@"gearshape" withConfiguration:[DOGlobalAppearance smallIconImageConfiguration]] identifier:@"settings" handler:^(__kindof UIAction * _Nonnull action) {
@@ -343,6 +358,28 @@
     } completion:^(BOOL success) {
         completion();
     }];
+}
+
+- (NSString *)formattedUptime
+{
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
+    long totalSeconds = ts.tv_sec;
+    long days = totalSeconds / 86400;
+    long hours = (totalSeconds % 86400) / 3600;
+    long minutes = (totalSeconds % 3600) / 60;
+    long seconds = totalSeconds % 60;
+    return [NSString stringWithFormat:DOLocalizedString(@"System_Uptime"), (long long)days, (long long)hours, (long long)minutes, (long long)seconds];
+}
+
+- (void)updateUptime
+{
+    self.uptimeLabel.attributedText = [DOGlobalAppearance secondarySubtitleString:[self formattedUptime]];
+}
+
+- (void)dealloc
+{
+    [self.uptimeTimer invalidate];
 }
 
 #pragma mark - Action Menu Delegate
