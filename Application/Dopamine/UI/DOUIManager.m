@@ -7,6 +7,7 @@
 
 #import "DOUIManager.h"
 #import "DOEnvironmentManager.h"
+#import "DOPreferenceManager.h"
 #import "DOThemeManager.h"
 #import "DOTheme.h"
 #import "NSString+Version.h"
@@ -37,6 +38,9 @@
 
 - (BOOL)isUpdateAvailable
 {
+    if ([[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"blockDopamineUpdates" fallback:NO]) {
+        return NO;
+    }
     NSString *latestVersion = [self getLatestReleaseTag];
     NSString *currentVersion = [self getLaunchedReleaseTag];
     return [latestVersion numericalVersionRepresentation] > [currentVersion numericalVersionRepresentation];
