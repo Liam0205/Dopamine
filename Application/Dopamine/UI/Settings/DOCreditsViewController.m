@@ -28,7 +28,10 @@
         _specifiers = [self loadSpecifiersFromPlistName:@"Credits" target:self];
 
         PSSpecifier *headerSpecifier = _specifiers[0];
-        [headerSpecifier setProperty:[NSString stringWithFormat:@"Dopamine %@ - %@", [DOEnvironmentManager sharedManager].appVersionDisplayString, DOLocalizedString(@"Menu_Credits_Title")] forKey:@"title"];
+        NSString *version = [DOEnvironmentManager sharedManager].appVersion;
+        NSRange dashRange = [version rangeOfString:@"-"];
+        NSString *baseVersion = (dashRange.location != NSNotFound) ? [version substringToIndex:dashRange.location] : version;
+        [headerSpecifier setProperty:[NSString stringWithFormat:@"Dopamine %@ - %@", baseVersion, DOLocalizedString(@"Menu_Credits_Title")] forKey:@"title"];
     }
     return _specifiers;
 }

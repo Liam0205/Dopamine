@@ -15,6 +15,9 @@
 "Menu_Reboot_Userspace_Title" = "Reboot Userspace";
 "Menu_Credits_Title" = "Credits";
 
+// System Info
+"System_Uptime" = "Uptime: %lldd %lldh %lldm %llds";
+
 // Updating
 "Button_Update" = "Update";
 "Button_Update_Available" = "Update Available";

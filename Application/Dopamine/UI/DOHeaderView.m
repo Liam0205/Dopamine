@@ -48,6 +48,7 @@
         [subtitles enumerateObjectsUsingBlock:^(NSAttributedString *formatedText, NSUInteger idx, BOOL *stop) {
             UILabel *label = [[UILabel alloc] init];
             label.attributedText = formatedText;
+            label.numberOfLines = 0;
             label.translatesAutoresizingMaskIntoConstraints = NO;
             [stackView addArrangedSubview:label];
         }];
