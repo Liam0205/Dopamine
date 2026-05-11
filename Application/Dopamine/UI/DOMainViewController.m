@@ -8,6 +8,7 @@
 #import "DOMainViewController.h"
 #import "DOUIManager.h"
 #import "DOEnvironmentManager.h"
+#import "DOPreferenceManager.h"
 #import "DOJailbreaker.h"
 #import "DOGlobalAppearance.h"
 #import "DOActionMenuButton.h"
@@ -232,6 +233,10 @@
 
 - (void)startJailbreak
 {
+    DOPreferenceManager *prefManager = [DOPreferenceManager sharedManager];
+    NSNumber *totalJailbreaks = [prefManager preferenceValueForKey:@"total_jailbreaks"] ?: @0;
+    [prefManager setPreferenceValue:@(totalJailbreaks.integerValue + 1) forKey:@"total_jailbreaks"];
+
     DOJailbreaker *jailbreaker = [[DOJailbreaker alloc] init];
 
     [[DOUIManager sharedInstance] startLogCapture];
