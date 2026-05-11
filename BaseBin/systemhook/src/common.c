@@ -12,6 +12,45 @@
 #include "private.h"
 #include <libjailbreak/jbclient_xpc.h>
 #include <libjailbreak/jbserver_domains.h>
+#include <libjailbreak/jbroot.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+
+extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
+
+static const char *kUnjectPlistPaths[] = {
+	"/var/mobile/zp.unject.plist",
+	"/var/mobile/Library/Preferences/zp.unject.plist",
+};
+
+static bool unject_plist_exists(void)
+{
+	for (size_t i = 0; i < sizeof(kUnjectPlistPaths)/sizeof(kUnjectPlistPaths[0]); i++) {
+		if (access(kUnjectPlistPaths[i], F_OK) == 0) return true;
+	}
+	return false;
+}
+
+static bool unject(const char *name)
+{
+	for (size_t i = 0; i < sizeof(kUnjectPlistPaths)/sizeof(kUnjectPlistPaths[0]); i++) {
+		int fd = open(kUnjectPlistPaths[i], O_RDONLY);
+		if (fd < 0) continue;
+		struct stat st;
+		if (fstat(fd, &st) != 0) { close(fd); continue; }
+		void *buf = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+		close(fd);
+		if (buf == MAP_FAILED) continue;
+		xpc_object_t plist = xpc_create_from_plist(buf, st.st_size);
+		munmap(buf, st.st_size);
+		if (!plist) continue;
+		if (xpc_get_type(plist) == XPC_TYPE_DICTIONARY) {
+			bool val = xpc_dictionary_get_bool(plist, name);
+			if (val) return true;
+		}
+	}
+	return false;
+}
 
 bool string_has_prefix(const char *str, const char* prefix)
 {
@@ -72,6 +111,15 @@ static kSpawnConfig spawn_config_for_executable(const char* path, char *const ar
 	for (size_t i = 0; i < blacklistCount; i++)
 	{
 		if (!strcmp(processBlacklist[i], path)) return 0;
+	}
+
+	// Unject: skip injection for user-specified processes
+	if (unject_plist_exists()) {
+		if (!string_has_prefix(path, JBROOT_PATH("/")) && !strstr(path, "procursus")) {
+			if (strstr(path, ".appex/")) return kSpawnConfigTrust;
+			const char *exe_name = strrchr(path, '/');
+			if (exe_name && unject(exe_name + 1)) return kSpawnConfigTrust;
+		}
 	}
 
 	return (kSpawnConfigInject | kSpawnConfigTrust);
