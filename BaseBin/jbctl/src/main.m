@@ -18,7 +18,9 @@ Available commands:\n\
 	trustcache info\t\t\tPrint info about all jailbreak related trustcaches and the cdhashes contained in them\n\
 	trustcache clear\t\tClears all existing cdhashes from the jailbreaks trustcache\n\
 	trustcache add <cdhash>\t\tAdd an arbitrary cdhash to the jailbreaks trustcache\n\
-	update <tipa/basebin> <path>\tInitiates a jailbreak update either based on a TIPA or based on a basebin.tar file, TIPA installation depends on TrollStore, afterwards it triggers a userspace reboot\n");
+	update <tipa/basebin> <path>\tInitiates a jailbreak update either based on a TIPA or based on a basebin.tar file, TIPA installation depends on TrollStore, afterwards it triggers a userspace reboot\n\
+	bindmount_path <source_path>\tCopy contents and bind-mount onto the jailbreak root. Persists across reboots.\n\
+	bindunmount_path <source_path>\tRevert a previous bindmount_path operation.\n");
 }
 
 int main(int argc, char* argv[])
@@ -189,6 +191,18 @@ int main(int argc, char* argv[])
 
 		const char *internalCmd = argv[2];
 		return jbctl_handle_internal(internalCmd, argc-2, &argv[2]);
+	}
+	else if (!strcmp(cmd, "bindmount_path")) {
+		if (argc != 3) { print_usage(); return 1; }
+		if (getuid() != 0) { printf("ERROR: bindmount_path requires root.\n"); return 3; }
+		const char *internalArgv[] = { "bindmount_path", argv[2] };
+		return jbctl_handle_internal("bindmount_path", 2, (char **)internalArgv);
+	}
+	else if (!strcmp(cmd, "bindunmount_path")) {
+		if (argc != 3) { print_usage(); return 1; }
+		if (getuid() != 0) { printf("ERROR: bindunmount_path requires root.\n"); return 3; }
+		const char *internalArgv[] = { "bindunmount_path", argv[2] };
+		return jbctl_handle_internal("bindunmount_path", 2, (char **)internalArgv);
 	}
 
 	return 0;

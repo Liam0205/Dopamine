@@ -56,6 +56,22 @@
 "Settings_Rebuild_Environment" = "Rebuild Environment";
 "Settings_Jetsam_Multiplier" = "Jetsam Multiplier";
 
+// Path Mapping
+"Section_Path_Mapping" = "Path Mapping";
+"Settings_Path_Mapping_Enabled" = "Enable Path Mapping";
+"Settings_Path_Mapping_Add" = "Add Path";
+"Settings_Path_Mapping_Warning" = "Path mapping allows modifying system files by bind-mounting copies. Use with caution — incorrect paths may cause system instability.";
+"Alert_Path_Mapping_Add_Title" = "Add Path Mapping";
+"Alert_Path_Mapping_Add_Message" = "Enter an absolute path to bind-mount (e.g. /usr/share/fonts).";
+"Alert_Path_Mapping_Remove_Title" = "Remove Path Mapping";
+"Alert_Path_Mapping_Remove_Message" = "Are you sure you want to remove the bind mount for \"%@\"? This will restore the original files.";
+"Alert_Path_Mapping_Error_Invalid" = "Path must be an absolute path starting with /.";
+"Alert_Path_Mapping_Error_Protected" = "This path is protected and cannot be mapped.";
+"Alert_Path_Mapping_Error_Overlap" = "This path overlaps with an existing mapping.";
+"Alert_Path_Mapping_Error_Max" = "Maximum number of path mappings (20) reached.";
+"Alert_Path_Mapping_Error_Failed" = "Failed to create bind mount (error %d).";
+"Button_Add" = "Add";
+
 // Settings Buttons
 "Button_Remove_Jailbreak" = "Remove Jailbreak";
 "Button_Hide_Jailbreak" = "Hide Jailbreak";

@@ -55,6 +55,22 @@
 "Settings_Rebuild_Environment" = "重建越狱环境";
 "Settings_Jetsam_Multiplier" = "Jetsam 倍数";
 
+// Path Mapping
+"Section_Path_Mapping" = "路径映射";
+"Settings_Path_Mapping_Enabled" = "启用路径映射";
+"Settings_Path_Mapping_Add" = "添加路径";
+"Settings_Path_Mapping_Warning" = "路径映射通过绑定挂载副本来修改系统文件。请谨慎使用——错误的路径可能导致系统不稳定。";
+"Alert_Path_Mapping_Add_Title" = "添加路径映射";
+"Alert_Path_Mapping_Add_Message" = "输入要绑定挂载的绝对路径（例如 /usr/share/fonts）。";
+"Alert_Path_Mapping_Remove_Title" = "移除路径映射";
+"Alert_Path_Mapping_Remove_Message" = "确定要移除 \"%@\" 的绑定挂载吗？这将恢复原始文件。";
+"Alert_Path_Mapping_Error_Invalid" = "路径必须是以 / 开头的绝对路径。";
+"Alert_Path_Mapping_Error_Protected" = "该路径受保护，无法映射。";
+"Alert_Path_Mapping_Error_Overlap" = "该路径与已有映射重叠。";
+"Alert_Path_Mapping_Error_Max" = "已达到路径映射上限（20条）。";
+"Alert_Path_Mapping_Error_Failed" = "创建绑定挂载失败（错误 %d）。";
+"Button_Add" = "添加";
+
 // Settings Buttons
 "Button_Remove_Jailbreak" = "移除越狱";
 "Button_Hide_Jailbreak" = "隐藏越狱";
