@@ -237,6 +237,14 @@
             [specifiers addObject:blockUpdatesSpecifier];
 
             if (!envManager.isJailbroken) {
+                PSSpecifier *rebuildSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_Rebuild_Environment") target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
+                [rebuildSpecifier setProperty:@YES forKey:@"enabled"];
+                [rebuildSpecifier setProperty:@"rebuildEnvironment" forKey:@"key"];
+                [rebuildSpecifier setProperty:@NO forKey:@"default"];
+                [specifiers addObject:rebuildSpecifier];
+            }
+
+            if (!envManager.isJailbroken) {
                 PSSpecifier *verboseLogSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_Verbose_Logs") target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
                 [verboseLogSpecifier setProperty:@YES forKey:@"enabled"];
                 [verboseLogSpecifier setProperty:@"verboseLogsEnabled" forKey:@"key"];

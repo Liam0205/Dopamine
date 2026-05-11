@@ -7,6 +7,7 @@
 
 #import "DOBootstrapper.h"
 #import "DOEnvironmentManager.h"
+#import "DOPreferenceManager.h"
 #import "DOUIManager.h"
 #import <libjailbreak/info.h>
 #import <libjailbreak/util.h>
@@ -539,6 +540,14 @@ typedef NS_ENUM(NSInteger, JBErrorCode) {
     
     
     BOOL needsBootstrap = ![[NSFileManager defaultManager] fileExistsAtPath:installedPath];
+
+    BOOL rebuildEnvironment = [[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"rebuildEnvironment" fallback:NO];
+    if (rebuildEnvironment && !needsBootstrap) {
+        [[NSFileManager defaultManager] removeItemAtPath:installedPath error:nil];
+        [[DOPreferenceManager sharedManager] setPreferenceValue:@NO forKey:@"rebuildEnvironment"];
+        needsBootstrap = YES;
+    }
+
     if (needsBootstrap) {
         // First, wipe any existing content that's not basebin
         for (NSURL *subItemURL in [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:JBROOT_PATH(@"/")] includingPropertiesForKeys:nil options:0 error:nil]) {
