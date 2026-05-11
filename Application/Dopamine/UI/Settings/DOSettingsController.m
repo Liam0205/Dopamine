@@ -9,7 +9,9 @@
 #import <objc/runtime.h>
 #import <Photos/Photos.h>
 #import <libjailbreak/util.h>
+#import <libjailbreak/jbroot.h>
 #import "DOUIManager.h"
+#import "DOPreferenceManager.h"
 #import "DOPkgManagerPickerViewController.h"
 #import "DOHeaderCell.h"
 #import "DOEnvironmentManager.h"
@@ -24,6 +26,14 @@
 @interface DOSettingsController ()
 
 @end
+
+static NSString *const kPrefixersPlistName = @"/var/mobile/Library/Preferences/page.0x01.prefixers.plist";
+static const NSUInteger kMaxPathMappings = 20;
+
+static NSArray<NSString *> *protectedPaths(void)
+{
+    return @[@"/", @"/System", @"/usr", @"/private/var", @"/var/jb", @"/private/preboot", @"/bin", @"/sbin"];
+}
 
 @implementation DOSettingsController
 
@@ -349,7 +359,33 @@
                 }
             }
         }
-        
+
+        if (envManager.isJailbroken) {
+            _pathMappingGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
+            _pathMappingGroupSpecifier.name = DOLocalizedString(@"Section_Path_Mapping");
+            [_pathMappingGroupSpecifier setProperty:DOLocalizedString(@"Settings_Path_Mapping_Warning") forKey:@"footerText"];
+            [specifiers addObject:_pathMappingGroupSpecifier];
+
+            PSSpecifier *pathMappingToggle = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_Path_Mapping_Enabled") target:self set:@selector(setPathMappingEnabled:specifier:) get:defGetter detail:nil cell:PSSwitchCell edit:nil];
+            [pathMappingToggle setProperty:@YES forKey:@"enabled"];
+            [pathMappingToggle setProperty:@"pathMappingEnabled" forKey:@"key"];
+            [pathMappingToggle setProperty:@NO forKey:@"default"];
+            [specifiers addObject:pathMappingToggle];
+
+            _pathMappingSpecifiers = [NSMutableArray new];
+            _pathMappingAddSpecifier = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:defSetter get:defGetter detail:nil cell:PSStaticTextCell edit:nil];
+            [_pathMappingAddSpecifier setProperty:@"Settings_Path_Mapping_Add" forKey:@"title"];
+            [_pathMappingAddSpecifier setProperty:[DOButtonCell class] forKey:@"cellClass"];
+            [_pathMappingAddSpecifier setProperty:@(44) forKey:@"height"];
+            [_pathMappingAddSpecifier setProperty:@"plus.circle" forKey:@"image"];
+            [_pathMappingAddSpecifier setProperty:@"addPathMappingPressed" forKey:@"action"];
+
+            if ([[DOPreferenceManager sharedManager] boolPreferenceValueForKey:@"pathMappingEnabled" fallback:NO]) {
+                [self loadPathMappingSpecifiers:specifiers];
+                [specifiers addObject:_pathMappingAddSpecifier];
+            }
+        }
+
         PSSpecifier *themingGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
         themingGroupSpecifier.name = DOLocalizedString(@"Section_Customization");
         [specifiers addObject:themingGroupSpecifier];
@@ -746,6 +782,158 @@
     [[DOUIManager sharedInstance] resetSettings];
     [self.navigationController popToRootViewControllerAnimated:YES];
     [self reloadSpecifiers];
+}
+
+#pragma mark - Path Mapping
+
+- (NSArray<NSString *> *)currentMappedPaths
+{
+    NSString *plistPath = [NSString stringWithUTF8String:JBROOT_PATH(kPrefixersPlistName.UTF8String)];
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+    return [dict objectForKey:@"source"] ?: @[];
+}
+
+- (void)loadPathMappingSpecifiers:(NSMutableArray *)specifiers
+{
+    [_pathMappingSpecifiers removeAllObjects];
+    NSArray *paths = [self currentMappedPaths];
+    for (NSString *path in paths) {
+        PSSpecifier *spec = [PSSpecifier preferenceSpecifierNamed:path target:self set:nil get:nil detail:nil cell:PSStaticTextCell edit:nil];
+        [spec setProperty:@YES forKey:@"enabled"];
+        spec.identifier = [@"pathMapping_" stringByAppendingString:path];
+        [_pathMappingSpecifiers addObject:spec];
+        [specifiers addObject:spec];
+    }
+}
+
+- (void)setPathMappingEnabled:(id)value specifier:(PSSpecifier *)specifier
+{
+    [self setPreferenceValue:value specifier:specifier];
+    BOOL enabled = ((NSNumber *)value).boolValue;
+
+    if (enabled) {
+        NSMutableArray *toInsert = [NSMutableArray new];
+        NSMutableArray *tempSpecs = [NSMutableArray new];
+        [self loadPathMappingSpecifiers:tempSpecs];
+        [toInsert addObjectsFromArray:_pathMappingSpecifiers];
+        [toInsert addObject:_pathMappingAddSpecifier];
+        if (toInsert.count > 0) {
+            [self insertContiguousSpecifiers:toInsert afterSpecifier:specifier animated:YES];
+        }
+    } else {
+        NSMutableArray *toRemove = [NSMutableArray arrayWithArray:_pathMappingSpecifiers];
+        if ([self containsSpecifier:_pathMappingAddSpecifier]) {
+            [toRemove addObject:_pathMappingAddSpecifier];
+        }
+        if (toRemove.count > 0) {
+            [self removeContiguousSpecifiers:toRemove animated:YES];
+        }
+        [_pathMappingSpecifiers removeAllObjects];
+    }
+}
+
+- (void)addPathMappingPressed
+{
+    NSArray *paths = [self currentMappedPaths];
+    if (paths.count >= kMaxPathMappings) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Log_Error") message:DOLocalizedString(@"Alert_Path_Mapping_Error_Max") preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleCancel handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+        return;
+    }
+
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Alert_Path_Mapping_Add_Title") message:DOLocalizedString(@"Alert_Path_Mapping_Add_Message") preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = @"/usr/share/fonts";
+        textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        textField.autocorrectionType = UITextAutocorrectionTypeNo;
+        textField.keyboardType = UIKeyboardTypeURL;
+    }];
+
+    UIAlertAction *addAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Add") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSString *path = [alert.textFields.firstObject.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        [self performAddPathMapping:path];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:addAction];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)performAddPathMapping:(NSString *)path
+{
+    if (!path.length || ![path hasPrefix:@"/"]) {
+        [self showPathMappingError:DOLocalizedString(@"Alert_Path_Mapping_Error_Invalid")];
+        return;
+    }
+    if ([path hasSuffix:@"/"]) {
+        path = [path substringToIndex:path.length - 1];
+    }
+
+    for (NSString *protected in protectedPaths()) {
+        if ([path isEqualToString:protected]) {
+            [self showPathMappingError:DOLocalizedString(@"Alert_Path_Mapping_Error_Protected")];
+            return;
+        }
+    }
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        int r = exec_cmd(JBROOT_PATH("/basebin/jbctl"), "internal", "bindmount_path", path.UTF8String, NULL);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (r == 0) {
+                PSSpecifier *spec = [PSSpecifier preferenceSpecifierNamed:path target:self set:nil get:nil detail:nil cell:PSStaticTextCell edit:nil];
+                [spec setProperty:@YES forKey:@"enabled"];
+                spec.identifier = [@"pathMapping_" stringByAppendingString:path];
+                [_pathMappingSpecifiers addObject:spec];
+                int idx = [self indexOfSpecifier:_pathMappingAddSpecifier];
+                [self insertSpecifier:spec atIndex:idx animated:YES];
+            } else if (r == 254) {
+                [self showPathMappingError:DOLocalizedString(@"Alert_Path_Mapping_Error_Overlap")];
+            } else {
+                [self showPathMappingError:[NSString stringWithFormat:DOLocalizedString(@"Alert_Path_Mapping_Error_Failed"), r]];
+            }
+        });
+    });
+}
+
+- (void)showPathMappingError:(NSString *)message
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Log_Error") message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    int specIdx = [self indexForRow:(int)indexPath.row inGroup:(int)indexPath.section];
+    PSSpecifier *spec = [self specifierAtIndex:specIdx];
+    if ([spec.identifier hasPrefix:@"pathMapping_"]) {
+        NSString *path = [spec.identifier substringFromIndex:@"pathMapping_".length];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:DOLocalizedString(@"Alert_Path_Mapping_Remove_Title") message:[NSString stringWithFormat:DOLocalizedString(@"Alert_Path_Mapping_Remove_Message"), path] preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Continue") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            [self performRemovePathMapping:path specifier:spec];
+        }]];
+        [alert addAction:[UIAlertAction actionWithTitle:DOLocalizedString(@"Button_Cancel") style:UIAlertActionStyleCancel handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        return;
+    }
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+}
+
+- (void)performRemovePathMapping:(NSString *)path specifier:(PSSpecifier *)spec
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        int r = exec_cmd(JBROOT_PATH("/basebin/jbctl"), "internal", "bindunmount_path", path.UTF8String, NULL);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (r == 0) {
+                [_pathMappingSpecifiers removeObject:spec];
+                [self removeSpecifier:spec animated:YES];
+            } else {
+                [self showPathMappingError:[NSString stringWithFormat:DOLocalizedString(@"Alert_Path_Mapping_Error_Failed"), r]];
+            }
+        });
+    });
 }
 
 

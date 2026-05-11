@@ -23,6 +23,10 @@ NS_ASSUME_NONNULL_BEGIN
 
     PSSpecifier *_customBootlogoEnabledSpecifier;
     PSSpecifier *_customBootlogoSpecifier;
+
+    PSSpecifier *_pathMappingGroupSpecifier;
+    NSMutableArray<PSSpecifier *> *_pathMappingSpecifiers;
+    PSSpecifier *_pathMappingAddSpecifier;
 }
 
 @end
